@@ -5,6 +5,7 @@ import tempfile
 from pathlib import Path
 
 import docker
+import requests
 from docker.errors import APIError
 
 from models import Question, TestCase
@@ -82,8 +83,9 @@ class DockerRunner:
         image = LANGUAGE_IMAGES[language]
         command = self._get_command(language)
 
+        container = None
         try:
-            output = self._client.containers.run(
+            container = self._client.containers.run(
                 image=image,
                 command=command,
                 volumes={
@@ -93,18 +95,29 @@ class DockerRunner:
                 network_disabled=True,
                 mem_limit=MEMORY_LIMIT,
                 cpu_quota=CPU_QUOTA,
-                remove=True,
                 stdout=True,
-                stderr=True,
-                detach=False,
+                stderr=False,
+                detach=True,
             )
+            try:
+                container.wait(timeout=TIMEOUT_SECONDS)
+            except requests.exceptions.ReadTimeout:
+                return self._timeout_results(test_cases)
+
+            output = container.logs(stdout=True, stderr=False)
             output_str = output.decode("utf-8").strip()
             return self._parse_output(output_str, test_cases)
         except Exception as e:
             error_msg = str(e)
-            if "timeout" in error_msg.lower() or "timed out" in error_msg.lower():
+            if "timeout" in error_msg.lower() or "timed out" in error_msg.lower() or "ReadTimeout" in type(e).__name__:
                 return self._timeout_results(test_cases)
             return self._error_results(test_cases, error_msg[:500])
+        finally:
+            if container is not None:
+                try:
+                    container.remove(force=True)
+                except Exception:
+                    pass
 
     def _get_command(self, language: str) -> str:
         if language == "python":
