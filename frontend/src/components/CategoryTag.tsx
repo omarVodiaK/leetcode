@@ -3,10 +3,9 @@ interface Props {
 }
 
 export default function CategoryTag({ category }: Props) {
-  const label = category.replace(/-/g, ' ')
   return (
-    <span className="px-2 py-0.5 rounded text-xs bg-gray-700 text-gray-300 capitalize">
-      {label}
+    <span className="px-2 py-0.5 rounded text-xs border border-tn-teal/40 bg-tn-teal/10 text-tn-teal-light capitalize tracking-wide">
+      {category.replace(/-/g, ' ')}
     </span>
   )
 }

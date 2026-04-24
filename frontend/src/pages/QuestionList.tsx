@@ -24,17 +24,21 @@ export default function QuestionList() {
   }, [])
 
   const categories = [...new Set(questions.map((q) => q.category))]
-
   const filtered = questions.filter((q) => {
     if (diffFilter !== 'all' && q.difficulty !== diffFilter) return false
     if (catFilter !== 'all' && q.category !== catFilter) return false
     return true
   })
 
+  const solved   = questions.filter((q) => getStatus(q.id) === 'solved').length
+  const attempted = questions.filter((q) => getStatus(q.id) === 'attempted').length
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-gray-400 text-lg">Loading questions...</div>
+      <div className="flex items-center justify-center h-64 gap-3">
+        <span className="text-tn-gold animate-pulse text-2xl">✦</span>
+        <span className="text-tn-muted">Loading challenges…</span>
+        <span className="text-tn-gold animate-pulse text-2xl">✦</span>
       </div>
     )
   }
@@ -42,60 +46,63 @@ export default function QuestionList() {
   if (error) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-leetcode-red text-center">
-          <div className="text-xl mb-2">⚠️ {error}</div>
+        <div className="text-tn-danger text-center border border-tn-danger/30 rounded-lg p-6 bg-tn-card">
+          <div className="text-2xl mb-2">⚠</div>
+          <div>{error}</div>
         </div>
       </div>
     )
   }
 
-  const solved = questions.filter((q) => getStatus(q.id) === 'solved').length
-  const attempted = questions.filter((q) => getStatus(q.id) === 'attempted').length
-
   return (
     <div className="max-w-6xl mx-auto px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white mb-1">SRE Coding Challenges</h1>
-        <p className="text-gray-400 text-sm">
-          {solved} solved · {attempted} attempted · {questions.length} total
+
+      {/* ── Header ── */}
+      <div className="text-center mb-8">
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <span className="text-tn-gold text-xl">❖</span>
+          <h1 className="font-display text-2xl font-bold text-gold-shimmer tracking-widest uppercase">
+            SRE Coding Challenges
+          </h1>
+          <span className="text-tn-gold text-xl">❖</span>
+        </div>
+        <div className="arch-divider w-64 mx-auto mb-3" />
+        <p className="text-tn-muted text-sm tracking-wide">
+          <span className="text-tn-gold font-semibold">{solved}</span> solved ·{' '}
+          <span className="text-tn-yellow font-semibold">{attempted}</span> attempted ·{' '}
+          <span className="text-tn-muted">{questions.length}</span> total
         </p>
       </div>
 
-      <div className="flex gap-4 mb-6">
-        <select
-          value={diffFilter}
-          onChange={(e) => setDiffFilter(e.target.value)}
-          className="bg-leetcode-surface border border-gray-600 rounded px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-gray-400"
-        >
+      {/* ── Filters ── */}
+      <div className="flex gap-3 mb-5">
+        <select value={diffFilter} onChange={(e) => setDiffFilter(e.target.value)} className="tn-select">
           <option value="all">All Difficulties</option>
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
         </select>
-
-        <select
-          value={catFilter}
-          onChange={(e) => setCatFilter(e.target.value)}
-          className="bg-leetcode-surface border border-gray-600 rounded px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-gray-400"
-        >
+        <select value={catFilter} onChange={(e) => setCatFilter(e.target.value)} className="tn-select">
           <option value="all">All Categories</option>
           {categories.map((c) => (
-            <option key={c} value={c}>
-              {c.replace(/-/g, ' ')}
-            </option>
+            <option key={c} value={c}>{c.replace(/-/g, ' ')}</option>
           ))}
         </select>
       </div>
 
-      <div className="bg-leetcode-surface rounded-lg border border-gray-700 overflow-hidden">
+      {/* ── Table ── */}
+      <div className="border-ornate rounded-lg overflow-hidden bg-tn-surface">
+        {/* top ornamental strip */}
+        <div className="arch-divider" />
+
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-700 text-gray-400 text-sm">
-              <th className="text-left px-6 py-3 font-medium">Status</th>
-              <th className="text-left px-6 py-3 font-medium">Title</th>
-              <th className="text-left px-6 py-3 font-medium">Difficulty</th>
-              <th className="text-left px-6 py-3 font-medium">Category</th>
-              <th className="text-left px-6 py-3 font-medium">Languages</th>
+            <tr className="border-b border-tn-border bg-tn-card">
+              <th className="text-left px-5 py-3 text-tn-gold font-display text-xs uppercase tracking-widest font-semibold w-10">✦</th>
+              <th className="text-left px-5 py-3 text-tn-gold font-display text-xs uppercase tracking-widest font-semibold">Challenge</th>
+              <th className="text-left px-5 py-3 text-tn-gold font-display text-xs uppercase tracking-widest font-semibold">Level</th>
+              <th className="text-left px-5 py-3 text-tn-gold font-display text-xs uppercase tracking-widest font-semibold">Domain</th>
+              <th className="text-left px-5 py-3 text-tn-gold font-display text-xs uppercase tracking-widest font-semibold">Languages</th>
             </tr>
           </thead>
           <tbody>
@@ -103,31 +110,28 @@ export default function QuestionList() {
               <tr
                 key={q.id}
                 onClick={() => navigate(`/problem/${q.id}`)}
-                className={`
-                  cursor-pointer border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors
-                  ${i % 2 === 0 ? '' : 'bg-gray-800/20'}
-                `}
+                className={`tn-row cursor-pointer ${i % 2 === 0 ? '' : 'bg-tn-card/40'}`}
               >
-                <td className="px-6 py-4">
+                <td className="px-5 py-3.5">
                   <StatusBadge status={getStatus(q.id)} />
                 </td>
-                <td className="px-6 py-4">
-                  <span className="text-white font-medium hover:text-leetcode-accent transition-colors">
+                <td className="px-5 py-3.5">
+                  <span className="text-tn-ivory font-medium hover:text-tn-gold transition-colors">
                     {q.title}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-5 py-3.5">
                   <DifficultyBadge difficulty={q.difficulty} />
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-5 py-3.5">
                   <CategoryTag category={q.category} />
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-5 py-3.5">
                   <div className="flex gap-1">
                     {q.languages.map((lang) => (
                       <span
                         key={lang}
-                        className="px-1.5 py-0.5 rounded text-xs bg-gray-700/50 text-gray-400 uppercase font-mono"
+                        className="px-1.5 py-0.5 rounded text-xs border border-tn-gold/25 bg-tn-gold/8 text-tn-gold uppercase font-mono"
                       >
                         {lang}
                       </span>
@@ -138,9 +142,14 @@ export default function QuestionList() {
             ))}
           </tbody>
         </table>
+
         {filtered.length === 0 && (
-          <div className="text-center text-gray-500 py-12">No questions match the current filters.</div>
+          <div className="text-center text-tn-muted py-16 font-display tracking-widest">
+            ❖ No challenges match the current filters ❖
+          </div>
         )}
+
+        <div className="arch-divider" />
       </div>
     </div>
   )
