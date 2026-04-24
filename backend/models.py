@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Literal, Optional
 from pydantic import BaseModel
 
 
@@ -14,13 +14,13 @@ class TestCase(BaseModel):
     description: str
     input: str
     expected_output: str
-    hidden: bool
+    hidden: bool = False
 
 
 class Question(BaseModel):
     id: str
     title: str
-    difficulty: str  # "easy" | "medium" | "hard"
+    difficulty: Literal["easy", "medium", "hard"]
     category: str
     tags: list[str]
     languages: list[str]
@@ -44,7 +44,7 @@ class SubmitRequest(BaseModel):
     question_id: str
     language: str
     code: str
-    mode: str  # "run" | "submit"
+    mode: Literal["run", "submit"]
 
 
 class TestResult(BaseModel):
@@ -53,12 +53,12 @@ class TestResult(BaseModel):
     passed: bool
     runtime_ms: int
     hidden: bool
-    actual_output: Optional[str]
-    expected_output: Optional[str]
+    actual_output: Optional[str] = None
+    expected_output: Optional[str] = None
 
 
 class SubmitResponse(BaseModel):
-    status: str  # "accepted" | "partial" | "wrong_answer" | "time_limit_exceeded" | "runtime_error"
+    status: Literal["accepted", "partial", "wrong_answer", "time_limit_exceeded", "runtime_error"]
     results: list[TestResult]
     total: int
     passed: int
