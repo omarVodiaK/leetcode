@@ -4,6 +4,7 @@ Python test harness — injected into execution container.
 Reads test cases from /runner/tests.json, imports user solution,
 prints results as JSON to stdout.
 """
+import inspect
 import json
 import time
 import importlib.util
@@ -31,17 +32,22 @@ def run_tests(tests: list[dict]) -> list[dict]:
             for t in tests
         ]
 
-    # Prefer 'solve' function if it exists, otherwise first public callable
-    public_funcs = [
-        name for name in dir(solution)
-        if callable(getattr(solution, name)) and not name.startswith("_")
+    # Only consider functions defined in the solution file itself (not imported names).
+    # inspect.isfunction filters out imported classes (e.g. Counter, defaultdict).
+    # inspect.getfile checks the function was defined in /code/solution.py, not a stdlib.
+    solution_file = "/code/solution.py"
+    user_funcs = [
+        name for name, obj in inspect.getmembers(solution, inspect.isfunction)
+        if not name.startswith("_")
+        and inspect.getfile(obj) == solution_file
     ]
-    if not public_funcs:
+    if not user_funcs:
         return [
-            {"test_case_id": t["id"], "passed": False, "actual_output": "No public function found", "runtime_ms": 0}
+            {"test_case_id": t["id"], "passed": False, "actual_output": "No user-defined function found", "runtime_ms": 0}
             for t in tests
         ]
-    func_name = "solve" if "solve" in public_funcs else public_funcs[0]
+    # Prefer 'solve' if present, else take the first defined function
+    func_name = "solve" if "solve" in user_funcs else user_funcs[0]
     func = getattr(solution, func_name)
 
     results = []
