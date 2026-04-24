@@ -1,0 +1,48 @@
+{
+  "id": "sre-006",
+  "title": "Summarize Deployment Log",
+  "difficulty": "easy",
+  "category": "log-parsing",
+  "tags": ["deployment", "ci-cd", "summarization"],
+  "languages": ["python"],
+  "description": "Parse a deployment log where each line contains a service name followed by SUCCESS or FAILED. Return a summary dictionary with total count, succeeded count, failed count, and a sorted list of failed service names.",
+  "constraints": [
+    "Each line is in the format: service_name SUCCESS|FAILED",
+    "failed_services list must be sorted alphabetically",
+    "Return zero counts and empty list for empty input",
+    "Lines with unrecognized status should be skipped"
+  ],
+  "examples": [
+    {
+      "input": "auth-service SUCCESS\napi-gateway FAILED\npayment-service SUCCESS\nnotif-service FAILED",
+      "output": "{'total': 4, 'succeeded': 2, 'failed': 2, 'failed_services': ['api-gateway', 'notif-service']}",
+      "explanation": "4 services deployed; 2 succeeded (auth-service, payment-service) and 2 failed (api-gateway, notif-service). Failed services are returned in sorted order."
+    }
+  ],
+  "starter_code": {
+    "python": "def summarize_deployment(log_content: str) -> dict:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Four services with two successes and two failures",
+      "input": "auth-service SUCCESS\napi-gateway FAILED\npayment-service SUCCESS\nnotif-service FAILED",
+      "expected_output": "{'total': 4, 'succeeded': 2, 'failed': 2, 'failed_services': ['api-gateway', 'notif-service']}",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All services succeed returns zero failures",
+      "input": "svc-a SUCCESS\nsvc-b SUCCESS",
+      "expected_output": "{'total': 2, 'succeeded': 2, 'failed': 0, 'failed_services': []}",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Empty input returns all zeros",
+      "input": "",
+      "expected_output": "{'total': 0, 'succeeded': 0, 'failed': 0, 'failed_services': []}",
+      "hidden": true
+    }
+  ]
+}

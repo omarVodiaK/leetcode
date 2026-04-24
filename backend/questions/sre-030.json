@@ -1,0 +1,50 @@
+{
+  "id": "sre-030",
+  "title": "Context-Aware Timeout Handler",
+  "difficulty": "hard",
+  "category": "go-concurrency",
+  "tags": ["context", "timeout", "goroutines", "cancellation"],
+  "languages": ["go"],
+  "description": "Implement context-aware task execution with per-task timeouts. Each line of input describes a task with its name, simulated duration in milliseconds, and deadline in milliseconds. Run each task concurrently using goroutines with context timeouts. A task that completes within its deadline outputs DONE; one that exceeds it outputs TIMEOUT. Return results sorted alphabetically by task name.",
+  "constraints": [
+    "Each input line is space-separated: task_name duration_ms deadline_ms",
+    "Use context.WithTimeout to enforce per-task deadlines",
+    "A task DONE if duration_ms < deadline_ms (simulate work with time.Sleep or channel select)",
+    "A task TIMEOUT if duration_ms >= deadline_ms",
+    "Return results sorted alphabetically by task name",
+    "Output format: 'task_name DONE' or 'task_name TIMEOUT' (one per line)"
+  ],
+  "examples": [
+    {
+      "input": "task-a 100 200\ntask-b 300 100\ntask-c 50 500",
+      "output": "task-a DONE\ntask-b TIMEOUT\ntask-c DONE",
+      "explanation": "task-a (100ms) finishes before its 200ms deadline: DONE. task-b (300ms) exceeds its 100ms deadline: TIMEOUT. task-c (50ms) finishes before 500ms: DONE. Output sorted alphabetically."
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"context\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"\n\t\"sync\"\n\t\"time\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\ttype result struct {\n\t\tname   string\n\t\tstatus string\n\t}\n\tresults := make([]result, len(lines))\n\tvar wg sync.WaitGroup\n\tfor i, line := range lines {\n\t\tparts := strings.Fields(line)\n\t\tname := parts[0]\n\t\tduration, _ := strconv.Atoi(parts[1])\n\t\tdeadline, _ := strconv.Atoi(parts[2])\n\t\twg.Add(1)\n\t\tgo func(idx int, n string, dur, dl int) {\n\t\t\tdefer wg.Done()\n\t\t\tctx, cancel := context.WithTimeout(context.Background(), time.Duration(dl)*time.Millisecond)\n\t\t\tdefer cancel()\n\t\t\tworkDone := make(chan struct{})\n\t\t\tgo func() {\n\t\t\t\ttime.Sleep(time.Duration(dur) * time.Millisecond)\n\t\t\t\tclose(workDone)\n\t\t\t}()\n\t\t\t// TODO: select on ctx.Done() vs workDone and set results[idx]\n\t\t\t_ = ctx\n\t\t\t_ = workDone\n\t\t}(i, name, duration, deadline)\n\t}\n\twg.Wait()\n\tsort.Slice(results, func(i, j int) bool {\n\t\treturn results[i].name < results[j].name\n\t})\n\tvar out []string\n\tfor _, r := range results {\n\t\tout = append(out, r.name+\" \"+r.status)\n\t}\n\treturn strings.Join(out, \"\\n\")\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Three tasks: one barely fits, one times out, one has ample time",
+      "input": "task-a 100 200\ntask-b 300 100\ntask-c 50 500",
+      "expected_output": "task-a DONE\ntask-b TIMEOUT\ntask-c DONE",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All tasks complete within generous deadlines",
+      "input": "t1 10 1000\nt2 20 1000",
+      "expected_output": "t1 DONE\nt2 DONE",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "All tasks exceed their very tight deadlines",
+      "input": "alpha 500 10\nbeta 500 10",
+      "expected_output": "alpha TIMEOUT\nbeta TIMEOUT",
+      "hidden": true
+    }
+  ]
+}

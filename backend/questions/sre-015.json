@@ -1,0 +1,49 @@
+{
+  "id": "sre-015",
+  "title": "Parse On-Call Schedule",
+  "difficulty": "easy",
+  "category": "incident-automation",
+  "tags": ["on-call", "scheduling", "pagerduty"],
+  "languages": ["python"],
+  "description": "Given an on-call schedule and a query timestamp, determine which engineer is on call at that moment. The input consists of schedule lines (name,start_unix,end_unix) separated from the query timestamp by a line containing only '---'. An engineer is on call when start_unix <= query_time <= end_unix. If multiple entries match (e.g. at exact boundary), return the first one.",
+  "constraints": [
+    "Schedule lines are comma-separated: name,start_unix,end_unix",
+    "Query timestamp is a Unix integer on the line after '---'",
+    "Return the name of the on-call engineer or None if no one is scheduled",
+    "If multiple entries match, return the first one (earliest in file order)",
+    "Interval is closed: [start, end] inclusive on both ends"
+  ],
+  "examples": [
+    {
+      "input": "alice,1000,2000\nbob,2000,3000\ncarol,3000,4000\n---\n1500",
+      "output": "alice",
+      "explanation": "Timestamp 1500 falls within alice's shift [1000, 2000]. Bob's shift starts at 2000 and carol's at 3000."
+    }
+  ],
+  "starter_code": {
+    "python": "def find_oncall(schedule_and_query: str) -> str | None:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Query timestamp falls within alice's shift",
+      "input": "alice,1000,2000\nbob,2000,3000\ncarol,3000,4000\n---\n1500",
+      "expected_output": "alice",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Query timestamp is outside all shifts, returns None",
+      "input": "alice,1000,2000\n---\n5000",
+      "expected_output": "None",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Query at boundary ts=2000 matches both alice and bob; first match (alice) is returned",
+      "input": "alice,1000,2000\nbob,2000,3000\n---\n2000",
+      "expected_output": "alice",
+      "hidden": true
+    }
+  ]
+}

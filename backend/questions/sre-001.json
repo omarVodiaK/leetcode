@@ -1,0 +1,49 @@
+{
+  "id": "sre-001",
+  "title": "Top IPs from Nginx Access Log",
+  "difficulty": "easy",
+  "category": "log-parsing",
+  "tags": ["nginx", "access-log", "ip-analysis", "counter"],
+  "languages": ["python", "bash"],
+  "description": "Parse an Nginx Combined Log Format access log and find the top N IP addresses by request count. The first field of each log line is the client IP address. Return a sorted list of (ip, count) tuples in descending order of count.",
+  "constraints": [
+    "Log lines follow Nginx Combined Log Format where the first space-separated field is the IP",
+    "N defaults to 5 if not specified",
+    "Return an empty list for empty input",
+    "Ties in count can be broken in any order"
+  ],
+  "examples": [
+    {
+      "input": "192.168.1.1 - - [10/Oct/2024] \"GET /\" 200 1234\n192.168.1.2 - - [10/Oct/2024] \"GET /\" 200 1234\n192.168.1.1 - - [10/Oct/2024] \"GET /about\" 200 5678",
+      "output": "[('192.168.1.1', 2), ('192.168.1.2', 1)]",
+      "explanation": "192.168.1.1 appears twice, 192.168.1.2 appears once. With n=5 (default), both are returned sorted by count descending."
+    }
+  ],
+  "starter_code": {
+    "python": "def top_ips(log_content: str, n: int = 5) -> list[tuple[str, int]]:\n    pass\n",
+    "bash": "#!/bin/bash\n# Read log from stdin, N as first arg (default 5)\nN=${1:-5}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Basic log with two IPs",
+      "input": "192.168.1.1 - - [10/Oct/2024] \"GET /\" 200 1234\n192.168.1.2 - - [10/Oct/2024] \"GET /\" 200 1234\n192.168.1.1 - - [10/Oct/2024] \"GET /about\" 200 5678",
+      "expected_output": "[('192.168.1.1', 2), ('192.168.1.2', 1)]",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Empty log content returns empty list",
+      "input": "",
+      "expected_output": "[]",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Multiple IPs, top 3 requested",
+      "input": "10.0.0.1 - - [-] \"GET /\" 200 0\n10.0.0.1 - - [-] \"GET /\" 200 0\n10.0.0.1 - - [-] \"GET /\" 200 0\n10.0.0.2 - - [-] \"GET /\" 200 0\n10.0.0.2 - - [-] \"GET /\" 200 0\n10.0.0.3 - - [-] \"GET /\" 200 0\n10.0.0.4 - - [-] \"GET /\" 200 0\n10.0.0.5 - - [-] \"GET /\" 200 0",
+      "expected_output": "[('10.0.0.1', 3), ('10.0.0.2', 2), ('10.0.0.3', 1)]",
+      "hidden": true
+    }
+  ]
+}

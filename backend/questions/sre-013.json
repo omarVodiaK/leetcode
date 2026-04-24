@@ -1,0 +1,49 @@
+{
+  "id": "sre-013",
+  "title": "Aggregate Metrics by Service",
+  "difficulty": "medium",
+  "category": "metrics",
+  "tags": ["aggregation", "statistics", "multi-service"],
+  "languages": ["python"],
+  "description": "Parse a metrics log where each line contains a service name and a latency in milliseconds. Aggregate the data per service to produce min, max, average, and count statistics. Return a dictionary keyed by service name with nested stats dictionaries.",
+  "constraints": [
+    "Each line is space-separated: service_name latency_ms",
+    "Return {service: {min, max, avg, count}} for each service",
+    "avg must be rounded to 2 decimal places",
+    "Return empty dict for empty input",
+    "min and max are integers"
+  ],
+  "examples": [
+    {
+      "input": "auth 100\napi 200\nauth 150\napi 300\nauth 50",
+      "output": "{'auth': {'min': 50, 'max': 150, 'avg': 100.0, 'count': 3}, 'api': {'min': 200, 'max': 300, 'avg': 250.0, 'count': 2}}",
+      "explanation": "auth has 3 samples (100, 150, 50): min=50, max=150, avg=100.0. api has 2 samples (200, 300): min=200, max=300, avg=250.0."
+    }
+  ],
+  "starter_code": {
+    "python": "def aggregate_metrics(log_content: str) -> dict:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Two services with multiple measurements",
+      "input": "auth 100\napi 200\nauth 150\napi 300\nauth 50",
+      "expected_output": "{'auth': {'min': 50, 'max': 150, 'avg': 100.0, 'count': 3}, 'api': {'min': 200, 'max': 300, 'avg': 250.0, 'count': 2}}",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Single service with one measurement",
+      "input": "db 500",
+      "expected_output": "{'db': {'min': 500, 'max': 500, 'avg': 500.0, 'count': 1}}",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Empty input returns empty dict",
+      "input": "",
+      "expected_output": "{}",
+      "hidden": true
+    }
+  ]
+}

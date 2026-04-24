@@ -1,0 +1,49 @@
+{
+  "id": "sre-027",
+  "title": "Concurrent URL Health Checker",
+  "difficulty": "medium",
+  "category": "go-concurrency",
+  "tags": ["goroutines", "concurrency", "http", "health-check"],
+  "languages": ["go"],
+  "description": "Implement a concurrent URL health checker using goroutines. Given a list of URLs (one per line), check each one concurrently. Simulate the health check: a URL is UP if it contains the substring 'healthy', otherwise it is DOWN. Collect all results and return them sorted alphabetically by URL, one result per line in the format 'url STATUS'.",
+  "constraints": [
+    "Use goroutines and a channel or sync.WaitGroup to collect results concurrently",
+    "Health check simulation: UP if URL contains 'healthy', else DOWN",
+    "Return results sorted alphabetically by URL",
+    "Output format: 'url STATUS' (one per line)",
+    "Handle empty input by returning empty string"
+  ],
+  "examples": [
+    {
+      "input": "http://api.healthy.example.com\nhttp://db.example.com\nhttp://cache.healthy.example.com",
+      "output": "http://api.healthy.example.com UP\nhttp://cache.healthy.example.com UP\nhttp://db.example.com DOWN",
+      "explanation": "api.healthy and cache.healthy contain 'healthy' so they are UP. db.example.com does not, so it is DOWN. Results are sorted alphabetically."
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n\t\"strings\"\n\t\"sync\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\tif len(lines) == 1 && lines[0] == \"\" {\n\t\treturn \"\"\n\t}\n\ttype result struct {\n\t\turl    string\n\t\tstatus string\n\t}\n\tresults := make([]result, len(lines))\n\tvar wg sync.WaitGroup\n\tfor i, url := range lines {\n\t\twg.Add(1)\n\t\tgo func(idx int, u string) {\n\t\t\tdefer wg.Done()\n\t\t\t// TODO: determine status and store in results[idx]\n\t\t\t_ = fmt.Sprintf(\"%s\", u)\n\t\t}(i, url)\n\t}\n\twg.Wait()\n\tsort.Slice(results, func(i, j int) bool {\n\t\treturn results[i].url < results[j].url\n\t})\n\tvar out []string\n\tfor _, r := range results {\n\t\tout = append(out, r.url+\" \"+r.status)\n\t}\n\treturn strings.Join(out, \"\\n\")\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Two healthy URLs and one unhealthy, sorted output",
+      "input": "http://api.healthy.example.com\nhttp://db.example.com\nhttp://cache.healthy.example.com",
+      "expected_output": "http://api.healthy.example.com UP\nhttp://cache.healthy.example.com UP\nhttp://db.example.com DOWN",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All URLs contain healthy, all UP",
+      "input": "http://healthy.a.com\nhttp://healthy.b.com",
+      "expected_output": "http://healthy.a.com UP\nhttp://healthy.b.com UP",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Single URL without healthy is DOWN",
+      "input": "http://broken.example.com",
+      "expected_output": "http://broken.example.com DOWN",
+      "hidden": true
+    }
+  ]
+}

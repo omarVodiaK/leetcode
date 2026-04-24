@@ -1,0 +1,49 @@
+{
+  "id": "sre-005",
+  "title": "Detect Log Bursts",
+  "difficulty": "medium",
+  "category": "log-parsing",
+  "tags": ["time-series", "burst-detection", "windowing", "alerting"],
+  "languages": ["python"],
+  "description": "Given a log file with one Unix timestamp per line, detect time windows where the log event count exceeds a threshold. Group events into 1-minute windows (window_start = timestamp // 60 * 60) and return windows where the count exceeds the threshold as (window_start, count) tuples.",
+  "constraints": [
+    "Each line contains a single Unix timestamp integer",
+    "1-minute windows are defined as: window_start = timestamp // 60 * 60",
+    "Only return windows where count is strictly greater than threshold",
+    "Threshold defaults to 3 events per window",
+    "Return results sorted by window_start ascending"
+  ],
+  "examples": [
+    {
+      "input": "1700000000\n1700000010\n1700000020\n1700000030\n1700000040\n1700000060\n1700000070",
+      "output": "[(1700000000, 5)]",
+      "explanation": "The first minute (1700000000-1700000059) contains 5 events which exceeds threshold=3. The second minute contains only 2 events and is not returned."
+    }
+  ],
+  "starter_code": {
+    "python": "def detect_bursts(log_content: str, threshold: int = 3) -> list[tuple[int, int]]:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "First window has 5 events exceeding threshold=3",
+      "input": "1700000000\n1700000010\n1700000020\n1700000030\n1700000040\n1700000060\n1700000070",
+      "expected_output": "[(1700000000, 5)]",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Each window has exactly 1 event, none exceed threshold",
+      "input": "1700000000\n1700000060\n1700000120",
+      "expected_output": "[]",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Two windows each with 5 events both exceed threshold",
+      "input": "1700000000\n1700000001\n1700000002\n1700000003\n1700000004\n1700000060\n1700000061\n1700000062\n1700000063\n1700000064",
+      "expected_output": "[(1700000000, 5), (1700000060, 5)]",
+      "hidden": true
+    }
+  ]
+}

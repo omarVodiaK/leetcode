@@ -1,0 +1,49 @@
+{
+  "id": "sre-023",
+  "title": "Parse crontab for Next Run",
+  "difficulty": "hard",
+  "category": "infra-scripting",
+  "tags": ["cron", "scheduling", "datetime"],
+  "languages": ["python"],
+  "description": "Given a simplified cron expression (supporting only '*' wildcards and single integer values for the 5 fields: minute, hour, day-of-month, month, day-of-week) and a reference datetime, compute the next scheduled run time. Return the result as an ISO 8601 datetime string (YYYY-MM-DDTHH:MM:SS). The next run must be strictly after the reference time.",
+  "constraints": [
+    "Cron fields: minute(0-59) hour(0-23) dom(1-31) month(1-12) dow(0-6)",
+    "Only '*' (any) and single integer values are supported — no ranges, lists, or step values",
+    "Reference datetime is on the line after the cron expression, in ISO format YYYY-MM-DDTHH:MM:SS",
+    "Next run must be strictly after the reference datetime",
+    "Day-of-week (0=Sunday) is ignored if dom is a specific integer (dom takes precedence)"
+  ],
+  "examples": [
+    {
+      "input": "0 * * * *\n2024-01-01T00:00:30",
+      "output": "2024-01-01T01:00:00",
+      "explanation": "The cron runs at minute 0 of every hour. The reference time is 00:00:30, so the next run is at 01:00:00 (the next top of the hour)."
+    }
+  ],
+  "starter_code": {
+    "python": "from datetime import datetime, timedelta\n\ndef next_cron_run(cron_and_ref: str) -> str:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Hourly at minute 0, next run is in 1 hour",
+      "input": "0 * * * *\n2024-01-01T00:00:30",
+      "expected_output": "2024-01-01T01:00:00",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Daily at midnight, next run is next day",
+      "input": "0 0 * * *\n2024-01-01T00:01:00",
+      "expected_output": "2024-01-02T00:00:00",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Daily at 14:30, reference is exactly at 14:30 so next is tomorrow",
+      "input": "30 14 * * *\n2024-06-15T14:30:00",
+      "expected_output": "2024-06-16T14:30:00",
+      "hidden": true
+    }
+  ]
+}

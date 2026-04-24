@@ -1,0 +1,49 @@
+{
+  "id": "sre-014",
+  "title": "SLO Compliance Check",
+  "difficulty": "medium",
+  "category": "metrics",
+  "tags": ["slo", "sre", "error-budget", "reliability"],
+  "languages": ["python"],
+  "description": "Given a series of request outcome lines (1=success, 0=failure), determine if the service meets its SLO target. Compute the success rate, whether the SLO is met, and the remaining error budget as a percentage. Error budget remaining = (1 - slo_target) * 100 - actual_error_rate_percent.",
+  "constraints": [
+    "Each line is tab-separated: timestamp\\t1|0",
+    "slo_target defaults to 0.999 (99.9%)",
+    "success_rate and error_budget_remaining are rounded to 1 decimal place",
+    "met_slo is True if success_rate >= slo_target * 100",
+    "error_budget_remaining can be negative (budget exhausted)"
+  ],
+  "examples": [
+    {
+      "input": "1\t1\n2\t1\n3\t1\n4\t0\n5\t1",
+      "output": "{'success_rate': 80.0, 'met_slo': False, 'error_budget_remaining': -19.9}",
+      "explanation": "4 successes out of 5 = 80% success rate. With SLO=99.9%, error budget = 0.1%. Actual error rate = 20%, so remaining = 0.1 - 20.0 = -19.9% (budget exhausted)."
+    }
+  ],
+  "starter_code": {
+    "python": "def check_slo(log_content: str, slo_target: float = 0.999) -> dict:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "80% success rate far below 99.9% SLO, budget exhausted",
+      "input": "1\t1\n2\t1\n3\t1\n4\t0\n5\t1",
+      "expected_output": "{'success_rate': 80.0, 'met_slo': False, 'error_budget_remaining': -19.9}",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "100% success rate meets SLO with budget remaining",
+      "input": "1\t1\n2\t1\n3\t1",
+      "expected_output": "{'success_rate': 100.0, 'met_slo': True, 'error_budget_remaining': 0.1}",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "90% success rate (1 failure in 10) exceeds error budget",
+      "input": "1\t1\n2\t1\n3\t1\n4\t1\n5\t1\n6\t1\n7\t1\n8\t1\n9\t1\n10\t0",
+      "expected_output": "{'success_rate': 90.0, 'met_slo': False, 'error_budget_remaining': -9.9}",
+      "hidden": true
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "sre-019",
+  "title": "Alert Deduplication",
+  "difficulty": "medium",
+  "category": "incident-automation",
+  "tags": ["alerting", "deduplication", "noise-reduction"],
+  "languages": ["python"],
+  "description": "Implement alert deduplication to reduce alert noise. Given a log of alerts with timestamps, suppress duplicate alerts of the same type that occur within a sliding window of seconds from the last kept alert. Return only the non-suppressed alerts in their original order.",
+  "constraints": [
+    "Each line is tab-separated: timestamp\\talert_name",
+    "Keep the first occurrence of an alert; suppress subsequent occurrences within window_seconds",
+    "After window_seconds have passed since the last kept alert, the next occurrence is kept",
+    "window_seconds defaults to 300 (5 minutes)",
+    "Return kept alert lines joined with newlines"
+  ],
+  "examples": [
+    {
+      "input": "1000\tHighCPU\n1100\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
+      "output": "1000\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
+      "explanation": "HighCPU at 1000 is kept. HighCPU at 1100 is suppressed (1100-1000=100s < 300s window). HighMemory at 1400 is a new alert, kept. HighCPU at 1600 is kept (1600-1000=600s > 300s window)."
+    }
+  ],
+  "starter_code": {
+    "python": "def deduplicate_alerts(log_content: str, window_seconds: int = 300) -> str:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "HighCPU deduped within window, re-fires after window expires",
+      "input": "1000\tHighCPU\n1100\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
+      "expected_output": "1000\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Different alerts are never suppressed against each other",
+      "input": "1000\tAlertA\n2000\tAlertB",
+      "expected_output": "1000\tAlertA\n2000\tAlertB",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Three rapid same-name alerts, only first survives",
+      "input": "0\tDiskFull\n10\tDiskFull\n20\tDiskFull",
+      "expected_output": "0\tDiskFull",
+      "hidden": true
+    }
+  ]
+}

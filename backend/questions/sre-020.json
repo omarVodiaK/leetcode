@@ -1,0 +1,48 @@
+{
+  "id": "sre-020",
+  "title": "Health Check Result Aggregator",
+  "difficulty": "easy",
+  "category": "incident-automation",
+  "tags": ["health-check", "monitoring", "aggregation"],
+  "languages": ["python"],
+  "description": "Aggregate health check results for multiple services. Each line contains a service name and its status (UP or DOWN). Return a summary dict with total services, count of UP services, count of DOWN services, and a sorted list of service names that are currently DOWN.",
+  "constraints": [
+    "Each line is tab-separated: service_name\\tUP|DOWN",
+    "down_services list must be sorted alphabetically",
+    "Return zero counts and empty list for empty input",
+    "Duplicate service names are treated as separate entries"
+  ],
+  "examples": [
+    {
+      "input": "api\tUP\ndb\tDOWN\ncache\tUP\nqueue\tDOWN",
+      "output": "{'total_services': 4, 'up': 2, 'down': 2, 'down_services': ['db', 'queue']}",
+      "explanation": "4 services checked: api and cache are UP, db and queue are DOWN. Down services are listed alphabetically."
+    }
+  ],
+  "starter_code": {
+    "python": "def aggregate_health(log_content: str) -> dict:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "4 services, 2 up and 2 down",
+      "input": "api\tUP\ndb\tDOWN\ncache\tUP\nqueue\tDOWN",
+      "expected_output": "{'total_services': 4, 'up': 2, 'down': 2, 'down_services': ['db', 'queue']}",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All services UP, empty down list",
+      "input": "svc-a\tUP\nsvc-b\tUP",
+      "expected_output": "{'total_services': 2, 'up': 2, 'down': 0, 'down_services': []}",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Empty input returns all zeros",
+      "input": "",
+      "expected_output": "{'total_services': 0, 'up': 0, 'down': 0, 'down_services': []}",
+      "hidden": true
+    }
+  ]
+}
