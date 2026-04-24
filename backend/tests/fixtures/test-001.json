@@ -1,0 +1,36 @@
+{
+  "id": "test-001",
+  "title": "Test Question",
+  "difficulty": "easy",
+  "category": "testing",
+  "tags": ["test"],
+  "languages": ["python"],
+  "description": "A test question.",
+  "constraints": ["input is a string"],
+  "examples": [
+    {
+      "input": "hello",
+      "output": "HELLO",
+      "explanation": "Uppercased"
+    }
+  ],
+  "starter_code": {
+    "python": "def solve(s: str) -> str:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Basic case",
+      "input": "hello",
+      "expected_output": "HELLO",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Hidden edge case",
+      "input": "",
+      "expected_output": "",
+      "hidden": true
+    }
+  ]
+}
