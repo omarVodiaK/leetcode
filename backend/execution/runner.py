@@ -25,7 +25,7 @@ CPU_QUOTA = 50000  # 0.5 CPU cores (100000 = 1 core)
 
 class DockerRunner:
     def __init__(self):
-        self._client = docker.from_env()
+        self._client = docker.DockerClient(base_url="unix:///var/run/docker.sock")
 
     def run(
         self,

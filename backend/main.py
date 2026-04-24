@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,7 +9,18 @@ from execution.runner import DockerRunner
 
 QUESTIONS_DIR = Path(__file__).parent / "questions"
 
-app = FastAPI(title="SRE Interview Trainer API")
+loader = QuestionLoader(QUESTIONS_DIR)
+runner: DockerRunner | None = None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global runner
+    runner = DockerRunner()
+    yield
+
+
+app = FastAPI(title="SRE Interview Trainer API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,9 +28,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-loader = QuestionLoader(QUESTIONS_DIR)
-runner = DockerRunner()
 
 
 @app.get("/questions", response_model=list[QuestionSummary])
@@ -50,6 +59,9 @@ def submit(req: SubmitRequest):
         test_cases = [tc for tc in question.test_cases if not tc.hidden]
     else:
         test_cases = question.test_cases
+
+    if runner is None:
+        raise HTTPException(status_code=503, detail="Execution backend not ready")
 
     try:
         raw_results = runner.run(question, req.language, req.code, test_cases)
