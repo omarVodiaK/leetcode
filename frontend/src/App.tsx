@@ -28,8 +28,6 @@ export default function App() {
           {/* right ornament */}
           <div className="ml-auto flex items-center gap-2 text-tn-gold-dim text-xs select-none">
             <span>✦</span>
-            <span className="text-tn-muted font-mono">بسم الله</span>
-            <span>✦</span>
           </div>
         </div>
 
