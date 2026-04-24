@@ -1,0 +1,49 @@
+{
+  "id": "sre-029",
+  "title": "Fan-Out Worker Pool",
+  "difficulty": "medium",
+  "category": "go-concurrency",
+  "tags": ["worker-pool", "goroutines", "channels", "fan-out"],
+  "languages": ["go"],
+  "description": "Implement a fan-out worker pool pattern in Go. The first line of input is 'workers=N' specifying the pool size. The remaining lines are integers. Use N goroutines as workers to compute the square of each integer concurrently, then return all squares sorted in ascending order.",
+  "constraints": [
+    "First line: workers=N (integer, number of goroutines in the pool)",
+    "Remaining lines are integers to be squared",
+    "Use a worker pool pattern with channels",
+    "Return squares sorted ascending, one per line",
+    "Handle empty task list gracefully"
+  ],
+  "examples": [
+    {
+      "input": "workers=3\n1\n2\n3\n4\n5",
+      "output": "1\n4\n9\n16\n25",
+      "explanation": "Three workers process the squaring tasks concurrently. Results (1,4,9,16,25) are collected and returned sorted ascending."
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\tworkerCount, _ := strconv.Atoi(strings.Split(lines[0], \"=\")[1])\n\tnums := lines[1:]\n\t_ = workerCount\n\tjobs := make(chan int, len(nums))\n\tresults := make(chan int, len(nums))\n\t// TODO: launch workerCount goroutines, each reads from jobs and sends square to results\n\t// TODO: send all numbers to jobs channel, close it\n\t// TODO: collect results and sort them\n\tclose(jobs)\n\tvar squares []int\n\t_ = squares\n\tsort.Ints(squares)\n\tvar out []string\n\tfor _, v := range squares {\n\t\tout = append(out, strconv.Itoa(v))\n\t}\n\treturn strings.Join(out, \"\\n\")\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "3 workers computing squares of 1-5, sorted output",
+      "input": "workers=3\n1\n2\n3\n4\n5",
+      "expected_output": "1\n4\n9\n16\n25",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "1 worker, inputs 10, 3, 7 - sorted squares returned",
+      "input": "workers=1\n10\n3\n7",
+      "expected_output": "9\n49\n100",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "10 workers but only 2 numbers",
+      "input": "workers=10\n2\n4",
+      "expected_output": "4\n16",
+      "hidden": true
+    }
+  ]
+}

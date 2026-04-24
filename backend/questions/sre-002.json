@@ -1,0 +1,49 @@
+{
+  "id": "sre-002",
+  "title": "Count HTTP Status Codes",
+  "difficulty": "easy",
+  "category": "log-parsing",
+  "tags": ["nginx", "http", "status-codes", "counter"],
+  "languages": ["python", "bash"],
+  "description": "Parse an Nginx access log and count occurrences of each HTTP status code. The status code is the 9th space-separated field (1-indexed) in each log line. Return a dictionary mapping integer status codes to their counts.",
+  "constraints": [
+    "Status code is the 9th space-separated field in each log line",
+    "Return an empty dict for empty input",
+    "Status codes are integers in the returned dict",
+    "Lines with fewer than 9 fields should be skipped"
+  ],
+  "examples": [
+    {
+      "input": "127.0.0.1 - - [01/Jan/2024] \"GET /\" 200 1234 \"-\" \"-\"\n127.0.0.1 - - [01/Jan/2024] \"GET /missing\" 404 0 \"-\" \"-\"\n127.0.0.1 - - [01/Jan/2024] \"POST /api\" 200 500 \"-\" \"-\"",
+      "output": "{200: 2, 404: 1}",
+      "explanation": "Two requests returned 200 OK and one returned 404 Not Found."
+    }
+  ],
+  "starter_code": {
+    "python": "def count_status_codes(log_content: str) -> dict[int, int]:\n    pass\n",
+    "bash": "#!/bin/bash\n# Read log from stdin, output status code counts\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Log with 200 and 404 status codes",
+      "input": "127.0.0.1 - - [01/Jan/2024] \"GET /\" 200 1234 \"-\" \"-\"\n127.0.0.1 - - [01/Jan/2024] \"GET /missing\" 404 0 \"-\" \"-\"\n127.0.0.1 - - [01/Jan/2024] \"POST /api\" 200 500 \"-\" \"-\"",
+      "expected_output": "{200: 2, 404: 1}",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Empty log returns empty dict",
+      "input": "",
+      "expected_output": "{}",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Log with only 500 errors",
+      "input": "10.0.0.1 - - [-] \"GET /crash\" 500 0 \"-\" \"-\"\n10.0.0.1 - - [-] \"GET /crash\" 500 0 \"-\" \"-\"\n10.0.0.1 - - [-] \"GET /crash\" 500 0 \"-\" \"-\"",
+      "expected_output": "{500: 3}",
+      "hidden": true
+    }
+  ]
+}

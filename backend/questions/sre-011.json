@@ -1,0 +1,49 @@
+{
+  "id": "sre-011",
+  "title": "Simple Threshold Alerting",
+  "difficulty": "easy",
+  "category": "metrics",
+  "tags": ["alerting", "threshold", "consecutive", "monitoring"],
+  "languages": ["python"],
+  "description": "Given a time series of metric values (timestamp\\tvalue per line), detect alert conditions where the metric exceeds a threshold for at least N consecutive readings. Return the starting timestamp of each alert window. Overlapping or adjacent windows that are not separated by a below-threshold value count as one alert starting at the first breach.",
+  "constraints": [
+    "Each line is tab-separated: timestamp\\tvalue",
+    "Alert fires when 'consecutive' readings in a row exceed 'threshold'",
+    "Return the timestamp of the first reading in each qualifying run",
+    "Threshold defaults to 80.0, consecutive defaults to 3",
+    "Values and threshold are floats; a reading AT the threshold (equal) does not trigger"
+  ],
+  "examples": [
+    {
+      "input": "1\t10\n2\t85\n3\t90\n4\t95\n5\t20\n6\t80\n7\t85",
+      "output": "[2]",
+      "explanation": "Timestamps 2,3,4 all exceed 80.0 (3 consecutive readings), triggering an alert at timestamp 2. The reading at timestamp 6 equals 80.0 (not strictly above) so no second alert fires."
+    }
+  ],
+  "starter_code": {
+    "python": "def threshold_alerts(log_content: str, threshold: float = 80.0, consecutive: int = 3) -> list[int]:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Three consecutive above-threshold values trigger one alert at ts=2",
+      "input": "1\t10\n2\t85\n3\t90\n4\t95\n5\t20\n6\t80\n7\t85",
+      "expected_output": "[2]",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All values below threshold, no alerts",
+      "input": "1\t10\n2\t20\n3\t30",
+      "expected_output": "[]",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Two separate alert windows each with 3+ consecutive values",
+      "input": "1\t90\n2\t91\n3\t92\n4\t10\n5\t93\n6\t94\n7\t95",
+      "expected_output": "[1, 5]",
+      "hidden": true
+    }
+  ]
+}

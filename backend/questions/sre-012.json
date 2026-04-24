@@ -1,0 +1,49 @@
+{
+  "id": "sre-012",
+  "title": "Moving Average",
+  "difficulty": "easy",
+  "category": "metrics",
+  "tags": ["moving-average", "smoothing", "time-series"],
+  "languages": ["python"],
+  "description": "Compute a rolling (moving) average of a time series of numeric values. For each position, compute the average of the current and previous w-1 values. Positions where a full window is not yet available (the first w-1 positions) should be represented as None.",
+  "constraints": [
+    "Values are numeric, one per line",
+    "Window size w defaults to 3",
+    "First w-1 results are None",
+    "Averages are floats",
+    "If the input has only one value and w=1, return [value as float]"
+  ],
+  "examples": [
+    {
+      "input": "10\n20\n30\n40\n50",
+      "output": "[None, None, 20.0, 30.0, 40.0]",
+      "explanation": "With w=3: indices 0 and 1 have fewer than 3 values so they are None. Index 2: (10+20+30)/3=20.0. Index 3: (20+30+40)/3=30.0. Index 4: (30+40+50)/3=40.0."
+    }
+  ],
+  "starter_code": {
+    "python": "def moving_average(log_content: str, w: int = 3) -> list:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Five values with window=3, first two are None",
+      "input": "10\n20\n30\n40\n50",
+      "expected_output": "[None, None, 20.0, 30.0, 40.0]",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Single value with w=1 returns [value as float]",
+      "input": "42",
+      "expected_output": "[42.0]",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Four values with w=2, first is None",
+      "input": "4\n8\n6\n10",
+      "expected_output": "[None, 6.0, 7.0, 8.0]",
+      "hidden": true
+    }
+  ]
+}

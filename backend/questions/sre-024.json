@@ -1,0 +1,50 @@
+{
+  "id": "sre-024",
+  "title": "Config File Diff",
+  "difficulty": "medium",
+  "category": "infra-scripting",
+  "tags": ["config", "diff", "infrastructure-as-code", "gitops"],
+  "languages": ["python"],
+  "description": "Compare two key=value configuration files and identify what changed between them. The two config files are separated by a line containing only '---'. Return a dictionary with three keys: 'added' (keys in new but not old), 'removed' (keys in old but not new), and 'changed' (keys in both but with different values, showing old and new values).",
+  "constraints": [
+    "Each config line is in key=value format",
+    "The two configs are separated by a line containing only '---'",
+    "added: {key: new_value} for keys only in new config",
+    "removed: {key: old_value} for keys only in old config",
+    "changed: {key: {old: old_val, new: new_val}} for keys with different values",
+    "Keys with identical values in both configs are not reported"
+  ],
+  "examples": [
+    {
+      "input": "host=localhost\nport=5432\ndebug=true\n---\nhost=db.prod\nport=5432\ntimeout=30",
+      "output": "{'added': {'timeout': '30'}, 'removed': {'debug': 'true'}, 'changed': {'host': {'old': 'localhost', 'new': 'db.prod'}}}",
+      "explanation": "timeout was added, debug was removed, host changed from localhost to db.prod. port=5432 is identical and not reported."
+    }
+  ],
+  "starter_code": {
+    "python": "def config_diff(old_and_new: str) -> dict:\n    pass\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "One key added, one removed, one changed, one unchanged",
+      "input": "host=localhost\nport=5432\ndebug=true\n---\nhost=db.prod\nport=5432\ntimeout=30",
+      "expected_output": "{'added': {'timeout': '30'}, 'removed': {'debug': 'true'}, 'changed': {'host': {'old': 'localhost', 'new': 'db.prod'}}}",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Identical configs return empty diffs",
+      "input": "host=localhost\nport=5432\n---\nhost=localhost\nport=5432",
+      "expected_output": "{'added': {}, 'removed': {}, 'changed': {}}",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "All values changed, nothing added or removed",
+      "input": "a=1\nb=2\n---\na=10\nb=20",
+      "expected_output": "{'added': {}, 'removed': {}, 'changed': {'a': {'old': '1', 'new': '10'}, 'b': {'old': '2', 'new': '20'}}}",
+      "hidden": true
+    }
+  ]
+}
