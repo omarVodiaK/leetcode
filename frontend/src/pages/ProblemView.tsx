@@ -6,6 +6,7 @@ import CodeEditor from '../components/CodeEditor'
 import TestResults from '../components/TestResults'
 import DifficultyBadge from '../components/DifficultyBadge'
 import CategoryTag from '../components/CategoryTag'
+import SubmissionAnimation from '../components/SubmissionAnimation'
 import { useProgress } from '../hooks/useProgress'
 
 export default function ProblemView() {
@@ -18,6 +19,7 @@ export default function ProblemView() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<SubmitResponse | null>(null)
   const [mode, setMode] = useState<'run' | 'submit'>('run')
+  const [animTrigger, setAnimTrigger] = useState(0)
   const { getStatus, updateStatus } = useProgress()
 
   useEffect(() => {
@@ -52,6 +54,7 @@ export default function ProblemView() {
       try {
         const res = await submitCode(id, selectedLang, code, submitMode)
         setResult(res)
+        setAnimTrigger((t) => t + 1)
         const currentStatus = getStatus(id)
         if (res.status === 'accepted') {
           updateStatus(id, 'solved')
@@ -84,6 +87,7 @@ export default function ProblemView() {
 
   return (
     <div className="flex h-[calc(100vh-52px)]">
+      <SubmissionAnimation status={result?.status ?? null} trigger={animTrigger} />
       {/* Left pane: problem description */}
       <div className="w-[45%] border-r border-gray-700 flex flex-col overflow-hidden">
         <div className="p-4 border-b border-gray-700 flex items-center gap-3">
