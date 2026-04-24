@@ -5,7 +5,6 @@ Reads test cases from /runner/tests.json, imports user solution,
 prints results as JSON to stdout.
 """
 import json
-import sys
 import time
 import importlib.util
 from pathlib import Path
