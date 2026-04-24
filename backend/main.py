@@ -51,7 +51,10 @@ def submit(req: SubmitRequest):
     else:
         test_cases = question.test_cases
 
-    raw_results = runner.run(question, req.language, req.code, test_cases)
+    try:
+        raw_results = runner.run(question, req.language, req.code, test_cases)
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Execution backend unavailable: {e}")
 
     results = []
     for raw, tc in zip(raw_results, test_cases):
