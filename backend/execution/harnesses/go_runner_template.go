@@ -39,7 +39,7 @@ func main() {
 	var results []Result
 	for _, tc := range tests {
 		start := time.Now()
-		actual := solve(tc.Input)
+		actual, _ := runSafe(tc.Input)
 		elapsed := time.Since(start).Milliseconds()
 		results = append(results, Result{
 			TestCaseID:   tc.ID,
@@ -49,6 +49,20 @@ func main() {
 		})
 	}
 
-	out, _ := json.Marshal(results)
+	out, err := json.Marshal(results)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to marshal results: %v\n", err)
+		os.Exit(1)
+	}
 	fmt.Println(string(out))
+}
+
+func runSafe(input string) (output string, panicked bool) {
+	defer func() {
+		if r := recover(); r != nil {
+			output = fmt.Sprintf("RuntimeError: panic: %v", r)
+			panicked = true
+		}
+	}()
+	return solve(input), false
 }

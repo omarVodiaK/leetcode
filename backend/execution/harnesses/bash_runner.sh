@@ -3,43 +3,44 @@
 # Reads test cases from /runner/tests.json, runs user script with each input,
 # prints results as JSON to stdout.
 
-set -euo pipefail
+set -uo pipefail
 
 SOLUTION="/code/solution.sh"
 chmod +x "$SOLUTION"
 
-result="["
-first=true
+python3 - <<'PYEOF'
+import json
+import subprocess
+import time
 
-while IFS= read -r test_json; do
-    id=$(echo "$test_json" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['id'])")
-    input=$(echo "$test_json" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['input'])")
-    expected=$(echo "$test_json" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['expected_output'])")
+with open('/runner/tests.json') as f:
+    tests = json.load(f)
 
-    start_ms=$(($(date +%s%N)/1000000))
-    actual=$(echo "$input" | bash "$SOLUTION" 2>&1) || true
-    end_ms=$(($(date +%s%N)/1000000))
-    elapsed=$((end_ms - start_ms))
+results = []
+for test in tests:
+    start = time.monotonic()
+    try:
+        proc = subprocess.run(
+            ['bash', '/code/solution.sh'],
+            input=test['input'],
+            capture_output=True,
+            text=True,
+            timeout=8,
+        )
+        actual = proc.stdout.strip()
+        if proc.returncode != 0 and not actual:
+            actual = proc.stderr.strip() or f"Exit code {proc.returncode}"
+    except subprocess.TimeoutExpired:
+        actual = "Time Limit Exceeded"
+    except Exception as e:
+        actual = f"RuntimeError: {e}"
+    elapsed = int((time.monotonic() - start) * 1000)
+    results.append({
+        'test_case_id': test['id'],
+        'passed': actual == str(test['expected_output']).strip(),
+        'actual_output': actual,
+        'runtime_ms': elapsed,
+    })
 
-    actual_trimmed=$(echo "$actual" | xargs echo -n 2>/dev/null || echo "$actual")
-    expected_trimmed=$(echo "$expected" | xargs echo -n 2>/dev/null || echo "$expected")
-
-    if [ "$actual_trimmed" = "$expected_trimmed" ]; then
-        passed="true"
-    else
-        passed="false"
-    fi
-
-    actual_json=$(echo "$actual" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip()))")
-    entry="{\"test_case_id\":$id,\"passed\":$passed,\"actual_output\":$actual_json,\"runtime_ms\":$elapsed}"
-
-    if [ "$first" = true ]; then
-        result="$result$entry"
-        first=false
-    else
-        result="$result,$entry"
-    fi
-done < <(python3 -c "import json; [print(json.dumps(t)) for t in json.load(open('/runner/tests.json'))]")
-
-result="$result]"
-echo "$result"
+print(json.dumps(results))
+PYEOF

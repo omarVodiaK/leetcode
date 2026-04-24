@@ -28,21 +28,27 @@ def run_tests(tests: list[dict]) -> list[dict]:
                 "passed": False,
                 "actual_output": f"ImportError: {e}",
                 "runtime_ms": 0,
-                "error": str(e),
             }
             for t in tests
         ]
+
+    # Prefer 'solve' function if it exists, otherwise first public callable
+    public_funcs = [
+        name for name in dir(solution)
+        if callable(getattr(solution, name)) and not name.startswith("_")
+    ]
+    if not public_funcs:
+        return [
+            {"test_case_id": t["id"], "passed": False, "actual_output": "No public function found", "runtime_ms": 0}
+            for t in tests
+        ]
+    func_name = "solve" if "solve" in public_funcs else public_funcs[0]
+    func = getattr(solution, func_name)
 
     results = []
     for test in tests:
         start = time.monotonic()
         try:
-            # Call the first non-private function defined in the solution module
-            func_name = [
-                name for name in dir(solution)
-                if callable(getattr(solution, name)) and not name.startswith("_")
-            ][0]
-            func = getattr(solution, func_name)
             actual = str(func(test["input"]))
         except Exception as e:
             actual = f"RuntimeError: {e}"
