@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+
+# Node
+node_modules/
+dist/
+.cache/
+
+# OS
+.DS_Store
+
+# Docker
+*.log
+
+# Worktrees
+.worktrees/
