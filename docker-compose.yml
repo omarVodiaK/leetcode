@@ -11,11 +11,12 @@ services:
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:8000
     ports:
       - "3000:3000"
     depends_on:
       - backend
-    environment:
-      - VITE_API_URL=http://localhost:8000
     restart: unless-stopped
