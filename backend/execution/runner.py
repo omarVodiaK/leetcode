@@ -109,12 +109,20 @@ class DockerRunner:
 
         container = None
         try:
+            # For Go: mount a persistent build cache volume to avoid recompiling
+            # the standard library on every submission (cuts ~20s → ~2s after warm-up).
+            volumes = (
+                {"go-build-cache": {"bind": "/root/.cache/go-build", "mode": "rw"}}
+                if language == "go"
+                else {}
+            )
             container = self._client.containers.create(
                 image=image,
                 command=command,
                 network_disabled=True,
                 mem_limit=MEMORY_LIMIT,
                 cpu_quota=CPU_QUOTA,
+                volumes=volumes,
             )
 
             # Build one archive with prefixed paths and copy it to /.

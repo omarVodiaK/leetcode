@@ -6,6 +6,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./backend/questions:/app/questions:ro
+      - go-build-cache:/go-cache
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped
@@ -20,3 +21,7 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  go-build-cache:
+    external: true
