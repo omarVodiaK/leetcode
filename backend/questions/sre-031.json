@@ -23,7 +23,7 @@
   "examples": [
     {
       "input": "HTTP/1.1 200 OK\nContent-Type: application/json\nX-Request-Id: abc-123\nContent-Length: 45\n\n{\"status\":\"ok\"}",
-      "output": "status 200\ncontent_type application/json\nrequest_id abc-123\nbody_length 14",
+      "output": "status 200\ncontent_type application/json\nrequest_id abc-123\nbody_length 15",
       "explanation": "Status 200, content-type and request-id extracted, body is 14 bytes"
     }
   ],
@@ -35,7 +35,7 @@
       "id": 1,
       "description": "200 with X-Request-Id",
       "input": "HTTP/1.1 200 OK\nContent-Type: application/json\nX-Request-Id: abc-123\nContent-Length: 45\n\n{\"status\":\"ok\"}",
-      "expected_output": "status 200\ncontent_type application/json\nrequest_id abc-123\nbody_length 14",
+      "expected_output": "status 200\ncontent_type application/json\nrequest_id abc-123\nbody_length 15",
       "hidden": false
     },
     {
