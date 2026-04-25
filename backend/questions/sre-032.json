@@ -1,0 +1,56 @@
+{
+  "id": "sre-032",
+  "title": "DNS Failure Detector",
+  "priority": 1,
+  "difficulty": "easy",
+  "category": "networking",
+  "tags": [
+    "dns",
+    "networking",
+    "bash",
+    "troubleshooting"
+  ],
+  "languages": [
+    "bash"
+  ],
+  "description": "Given the output of multiple `dig` lookups concatenated together, identify which hostnames failed.\n\nEach lookup block starts with a line containing `<<>> DiG` followed by the queried hostname. A lookup failed if its header line contains `status: SERVFAIL` or `status: NXDOMAIN`.\n\nPrint one failed hostname per line in the order they appear. Return empty output if all succeeded.",
+  "constraints": [
+    "Each query block starts with a line matching `<<>> DiG`",
+    "The hostname is the last whitespace-separated token on that line",
+    "A failure is indicated by 'status: SERVFAIL' or 'status: NXDOMAIN' in the header line",
+    "Output one hostname per line in order of appearance"
+  ],
+  "examples": [
+    {
+      "input": "; <<>> DiG 9.16 <<>> api.example.com\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1\n;; ANSWER SECTION:\napi.example.com. 300 IN A 10.0.0.1\n\n; <<>> DiG 9.16 <<>> db.example.com\n;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 2\n;; QUESTION SECTION:\n;db.example.com. IN A",
+      "output": "db.example.com",
+      "explanation": "api.example.com succeeded (NOERROR), db.example.com failed (SERVFAIL)"
+    }
+  ],
+  "starter_code": {
+    "bash": "#!/bin/bash\n# Read dig output from stdin\n# Print each failed hostname (SERVFAIL or NXDOMAIN)\ncurrent_host=\"\"\nwhile IFS= read -r line; do\n    # TODO: detect DiG query lines and extract hostname\n    # TODO: detect SERVFAIL/NXDOMAIN and print current_host\n    :\ndone\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "One success, one SERVFAIL",
+      "input": "; <<>> DiG 9.16 <<>> api.example.com\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1\n;; ANSWER SECTION:\napi.example.com. 300 IN A 10.0.0.1\n\n; <<>> DiG 9.16 <<>> db.example.com\n;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 2\n;; QUESTION SECTION:\n;db.example.com. IN A",
+      "expected_output": "db.example.com",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All succeed",
+      "input": "; <<>> DiG 9.16 <<>> a.example.com\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1\n;; ANSWER SECTION:\na.example.com. 60 IN A 10.0.0.1",
+      "expected_output": "",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "SERVFAIL and NXDOMAIN",
+      "input": "; <<>> DiG 9.16 <<>> ok.example.com\n;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 1\n;; ANSWER SECTION:\nok.example.com. 300 IN A 1.2.3.4\n\n; <<>> DiG 9.16 <<>> dead.example.com\n;; ->>HEADER<<- opcode: QUERY, status: SERVFAIL, id: 2\n;; QUESTION SECTION:\n;dead.example.com. IN A\n\n; <<>> DiG 9.16 <<>> ghost.example.com\n;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 3\n;; QUESTION SECTION:\n;ghost.example.com. IN A",
+      "expected_output": "dead.example.com\nghost.example.com",
+      "hidden": true
+    }
+  ]
+}

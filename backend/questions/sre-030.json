@@ -3,8 +3,15 @@
   "title": "Context-Aware Timeout Handler",
   "difficulty": "hard",
   "category": "go-concurrency",
-  "tags": ["context", "timeout", "goroutines", "cancellation"],
-  "languages": ["go"],
+  "tags": [
+    "context",
+    "timeout",
+    "goroutines",
+    "cancellation"
+  ],
+  "languages": [
+    "go"
+  ],
   "description": "Implement context-aware task execution with per-task timeouts. Each line of input describes a task with its name, simulated duration in milliseconds, and deadline in milliseconds. Run each task concurrently using goroutines with context timeouts. A task that completes within its deadline outputs DONE; one that exceeds it outputs TIMEOUT. Return results sorted alphabetically by task name.",
   "constraints": [
     "Each input line is space-separated: task_name duration_ms deadline_ms",
@@ -46,5 +53,6 @@
       "expected_output": "alpha TIMEOUT\nbeta TIMEOUT",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 5
 }

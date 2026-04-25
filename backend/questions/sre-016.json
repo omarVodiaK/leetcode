@@ -50,5 +50,6 @@
       "expected_output": "[00:00:00] Epoch event",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 2
 }

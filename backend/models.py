@@ -29,6 +29,7 @@ class Question(BaseModel):
     examples: list[Example]
     starter_code: dict[str, str]
     test_cases: list[TestCase]
+    priority: int = 99
 
 
 class QuestionSummary(BaseModel):
@@ -38,6 +39,7 @@ class QuestionSummary(BaseModel):
     category: str
     tags: list[str]
     languages: list[str]
+    priority: int = 99
 
 
 class SubmitRequest(BaseModel):

@@ -51,5 +51,6 @@
       "expected_output": "/ 60",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 4
 }

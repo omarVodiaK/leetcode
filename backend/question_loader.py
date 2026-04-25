@@ -25,8 +25,9 @@ class QuestionLoader:
                 category=q.category,
                 tags=q.tags,
                 languages=q.languages,
+                priority=q.priority,
             )
-            for q in self._cache.values()
+            for q in sorted(self._cache.values(), key=lambda q: (q.priority, q.id))
         ]
 
     def get(self, question_id: str) -> Question | None:

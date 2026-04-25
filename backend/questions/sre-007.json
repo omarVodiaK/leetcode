@@ -49,5 +49,6 @@
       "expected_output": "a hello world\nb foo bar",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 3
 }

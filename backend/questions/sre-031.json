@@ -1,0 +1,56 @@
+{
+  "id": "sre-031",
+  "title": "Parse HTTP Response",
+  "priority": 1,
+  "difficulty": "medium",
+  "category": "networking",
+  "tags": [
+    "http",
+    "headers",
+    "networking",
+    "observability"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Given a raw HTTP response (status line + headers + blank line + body), extract key fields.\n\nReturn four lines:\n```\nstatus N\ncontent_type VALUE\nrequest_id VALUE\nbody_length N\n```\n\nUse `none` if `X-Request-Id` is not present. `body_length` is the number of bytes in the body (after the blank line separating headers from body).",
+  "constraints": [
+    "Headers are case-insensitive — normalise to lowercase for matching",
+    "The blank line separating headers from body contains only \\r\\n or \\n",
+    "body_length is the byte length of the body, not the Content-Length header value",
+    "Return `none` if X-Request-Id header is absent"
+  ],
+  "examples": [
+    {
+      "input": "HTTP/1.1 200 OK\nContent-Type: application/json\nX-Request-Id: abc-123\nContent-Length: 45\n\n{\"status\":\"ok\"}",
+      "output": "status 200\ncontent_type application/json\nrequest_id abc-123\nbody_length 14",
+      "explanation": "Status 200, content-type and request-id extracted, body is 14 bytes"
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// split on blank line for headers/body, parse status line, extract headers\n\treturn \"\"\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "200 with X-Request-Id",
+      "input": "HTTP/1.1 200 OK\nContent-Type: application/json\nX-Request-Id: abc-123\nContent-Length: 45\n\n{\"status\":\"ok\"}",
+      "expected_output": "status 200\ncontent_type application/json\nrequest_id abc-123\nbody_length 14",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "500 without X-Request-Id",
+      "input": "HTTP/1.1 500 Internal Server Error\nContent-Type: text/plain\n\nerror occurred",
+      "expected_output": "status 500\ncontent_type text/plain\nrequest_id none\nbody_length 14",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "301 redirect with request-id",
+      "input": "HTTP/1.1 301 Moved Permanently\nContent-Type: text/html\nX-Request-Id: xyz-789\nLocation: https://new.example.com\n\n",
+      "expected_output": "status 301\ncontent_type text/html\nrequest_id xyz-789\nbody_length 0",
+      "hidden": true
+    }
+  ]
+}

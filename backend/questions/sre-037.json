@@ -1,0 +1,55 @@
+{
+  "id": "sre-037",
+  "title": "K8s Resource Quota Analyzer",
+  "priority": 1,
+  "difficulty": "medium",
+  "category": "kubernetes",
+  "tags": [
+    "kubernetes",
+    "k8s",
+    "resources",
+    "reliability"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Input: two sections separated by `---`.\n\n**Section 1:** `kubectl top pods` output — `pod_name cpu_millicores memory_mib` per line (skip header).\n**Section 2:** resource limits — `pod_name cpu_limit_millicores memory_limit_mib` per line (skip header).\n\nFind pods where **CPU usage > 80%** of limit OR **memory usage > 80%** of limit.\n\nReturn `pod_name resource usage/limit` per finding, sorted by pod_name then by resource (cpu before memory). Return empty string if all pods are within limits.",
+  "constraints": [
+    "80% threshold is exclusive (strictly greater than 80%)",
+    "If a pod exceeds both, output two lines for that pod",
+    "Sort by pod_name alphabetically, then cpu before memory"
+  ],
+  "examples": [
+    {
+      "input": "NAME CPU MEMORY\napi-pod 850 512\ndb-pod 100 220\n---\nNAME CPU_LIMIT MEMORY_LIMIT\napi-pod 1000 640\ndb-pod 200 256",
+      "output": "api-pod cpu 850/1000\ndb-pod memory 220/256",
+      "explanation": "api-pod CPU 85%>80% flagged. db-pod memory 86%>80% flagged."
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse both sections, compute usage%, flag those >80%, sort by pod then resource type\n\treturn \"\"\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Two pods over limit in different resources",
+      "input": "NAME CPU MEMORY\napi-pod 850 512\ndb-pod 100 220\n---\nNAME CPU_LIMIT MEMORY_LIMIT\napi-pod 1000 640\ndb-pod 200 256",
+      "expected_output": "api-pod cpu 850/1000\ndb-pod memory 220/256",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All within limits",
+      "input": "NAME CPU MEMORY\npod-a 100 128\n---\nNAME CPU_LIMIT MEMORY_LIMIT\npod-a 1000 512",
+      "expected_output": "",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Pod exceeding both limits",
+      "input": "NAME CPU MEMORY\nworker 450 900\ncache 50 100\n---\nNAME CPU_LIMIT MEMORY_LIMIT\nworker 500 1000\ncache 200 512",
+      "expected_output": "worker cpu 450/500\nworker memory 900/1000",
+      "hidden": true
+    }
+  ]
+}

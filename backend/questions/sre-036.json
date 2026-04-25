@@ -1,0 +1,57 @@
+{
+  "id": "sre-036",
+  "title": "HTTP Health Check Aggregator",
+  "priority": 1,
+  "difficulty": "medium",
+  "category": "networking",
+  "tags": [
+    "http",
+    "health-check",
+    "reliability",
+    "monitoring"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `endpoint code1,code2,code3,code4,code5` — the last 5 HTTP status codes observed.\n\nClassify each endpoint:\n- `down` — all 5 codes are non-2xx\n- `degraded` — 3 or more codes are non-2xx (but not all 5)\n- `healthy` — fewer than 3 codes are non-2xx\n\nReturn only `down` and `degraded` endpoints as `endpoint status`, sorted alphabetically. Return empty string if all are healthy.",
+  "constraints": [
+    "2xx means status code 200-299",
+    "down: all 5 non-2xx",
+    "degraded: 3 or 4 non-2xx",
+    "healthy: 0, 1, or 2 non-2xx",
+    "Sort alphabetically by endpoint"
+  ],
+  "examples": [
+    {
+      "input": "/api/users 200,200,500,200,200\n/api/orders 500,500,500,500,500\n/health 200,200,200,200,200\n/api/auth 503,503,200,503,503",
+      "output": "/api/auth degraded\n/api/orders down",
+      "explanation": "/api/orders all non-2xx=down. /api/auth 4 non-2xx=degraded. /api/users 1 non-2xx=healthy."
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// split each line into endpoint+codes, count non-2xx, classify, filter non-healthy, sort\n\treturn \"\"\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Mixed health states",
+      "input": "/api/users 200,200,500,200,200\n/api/orders 500,500,500,500,500\n/health 200,200,200,200,200\n/api/auth 503,503,200,503,503",
+      "expected_output": "/api/auth degraded\n/api/orders down",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All healthy",
+      "input": "/ping 200,200,200,200,200\n/ready 201,200,200,200,204",
+      "expected_output": "",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Three degraded/down endpoints",
+      "input": "/a 500,500,500,200,200\n/b 404,404,404,404,404\n/c 200,503,503,503,200\n/d 200,200,200,200,200",
+      "expected_output": "/a degraded\n/b down\n/c degraded",
+      "hidden": true
+    }
+  ]
+}

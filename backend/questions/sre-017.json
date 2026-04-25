@@ -49,5 +49,6 @@
       "expected_output": "STEP_1: First action",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 3
 }

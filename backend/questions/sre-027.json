@@ -3,8 +3,15 @@
   "title": "Concurrent URL Health Checker",
   "difficulty": "medium",
   "category": "go-concurrency",
-  "tags": ["goroutines", "concurrency", "http", "health-check"],
-  "languages": ["go"],
+  "tags": [
+    "goroutines",
+    "concurrency",
+    "http",
+    "health-check"
+  ],
+  "languages": [
+    "go"
+  ],
   "description": "Implement a concurrent URL health checker using goroutines. Given a list of URLs (one per line), check each one concurrently. Simulate the health check: a URL is UP if it contains the substring 'healthy', otherwise it is DOWN. Collect all results and return them sorted alphabetically by URL, one result per line in the format 'url STATUS'.",
   "constraints": [
     "Use goroutines and a channel or sync.WaitGroup to collect results concurrently",
@@ -45,5 +52,6 @@
       "expected_output": "http://broken.example.com DOWN",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 5
 }

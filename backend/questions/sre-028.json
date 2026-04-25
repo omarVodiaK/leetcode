@@ -3,8 +3,15 @@
   "title": "Rate Limiter",
   "difficulty": "hard",
   "category": "go-concurrency",
-  "tags": ["rate-limiting", "token-bucket", "concurrency", "go"],
-  "languages": ["go"],
+  "tags": [
+    "rate-limiting",
+    "token-bucket",
+    "concurrency",
+    "go"
+  ],
+  "languages": [
+    "go"
+  ],
   "description": "Implement a token bucket rate limiter. The first line of input is 'rate=N' (tokens per second, also the bucket capacity). Each subsequent line is a request timestamp in milliseconds. Process requests in order: refill floor(elapsed_ms * rate / 1000) tokens since the last event, then allow the request if tokens >= 1 (deduct 1 token), else throttle. Output ALLOWED or THROTTLED per request.",
   "constraints": [
     "First line: rate=N (integer tokens per second, bucket capacity = rate)",
@@ -46,5 +53,6 @@
       "expected_output": "0 ALLOWED\n100 ALLOWED\n200 ALLOWED\n300 THROTTLED\n1000 ALLOWED\n1100 ALLOWED\n1200 ALLOWED\n1300 THROTTLED",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 5
 }

@@ -49,5 +49,6 @@
       "expected_output": "total 0\nsucceeded 0\nfailed 0\nfailed_services ",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 3
 }

@@ -50,5 +50,6 @@
       "expected_output": "total 0\nrunning 0\nnot_running 0\nhigh_restarts ",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 2
 }

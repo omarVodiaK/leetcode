@@ -49,5 +49,6 @@
       "expected_output": "0\tDiskFull",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 2
 }

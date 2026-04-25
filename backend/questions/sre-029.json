@@ -3,8 +3,15 @@
   "title": "Fan-Out Worker Pool",
   "difficulty": "medium",
   "category": "go-concurrency",
-  "tags": ["worker-pool", "goroutines", "channels", "fan-out"],
-  "languages": ["go"],
+  "tags": [
+    "worker-pool",
+    "goroutines",
+    "channels",
+    "fan-out"
+  ],
+  "languages": [
+    "go"
+  ],
   "description": "Implement a fan-out worker pool pattern in Go. The first line of input is 'workers=N' specifying the pool size. The remaining lines are integers. Use N goroutines as workers to compute the square of each integer concurrently, then return all squares sorted in ascending order.",
   "constraints": [
     "First line: workers=N (integer, number of goroutines in the pool)",
@@ -45,5 +52,6 @@
       "expected_output": "4\n16",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 5
 }

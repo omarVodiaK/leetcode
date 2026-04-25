@@ -1,0 +1,55 @@
+{
+  "id": "sre-033",
+  "title": "K8s CrashLoopBackOff & OOMKilled Detector",
+  "priority": 1,
+  "difficulty": "medium",
+  "category": "kubernetes",
+  "tags": [
+    "kubernetes",
+    "k8s",
+    "reliability",
+    "debugging"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line of input is `pod_name status restart_count`. Find all pods with status `CrashLoopBackOff` or `OOMKilled`.\n\nReturn them as `pod_name status restart_count` per line, sorted by restart_count descending.\n\nReturn empty string if none found.",
+  "constraints": [
+    "Fields are space-separated",
+    "Sort by restart_count descending (highest first)",
+    "Only include CrashLoopBackOff or OOMKilled pods"
+  ],
+  "examples": [
+    {
+      "input": "web-7d9f8b Running 2\napi-5c8d4f CrashLoopBackOff 47\ndb-6e7f9g OOMKilled 12\nworker-abc Running 0",
+      "output": "api-5c8d4f CrashLoopBackOff 47\ndb-6e7f9g OOMKilled 12",
+      "explanation": "Two unhealthy pods, sorted by restart count descending"
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// split each line into name/status/restarts, filter CrashLoopBackOff|OOMKilled, sort by restarts desc\n\treturn \"\"\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Mixed healthy and unhealthy pods",
+      "input": "web-7d9f8b Running 2\napi-5c8d4f CrashLoopBackOff 47\ndb-6e7f9g OOMKilled 12\nworker-abc Running 0",
+      "expected_output": "api-5c8d4f CrashLoopBackOff 47\ndb-6e7f9g OOMKilled 12",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All healthy",
+      "input": "pod-a Running 0\npod-b Running 1",
+      "expected_output": "",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Multiple crashes, tie-break by name",
+      "input": "alpha CrashLoopBackOff 5\nbeta OOMKilled 20\ngamma CrashLoopBackOff 20\ndelta Running 0",
+      "expected_output": "beta OOMKilled 20\ngamma CrashLoopBackOff 20\nalpha CrashLoopBackOff 5",
+      "hidden": true
+    }
+  ]
+}

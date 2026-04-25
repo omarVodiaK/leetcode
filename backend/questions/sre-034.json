@@ -1,0 +1,56 @@
+{
+  "id": "sre-034",
+  "title": "Distributed Trace Analyzer",
+  "priority": 1,
+  "difficulty": "hard",
+  "category": "observability",
+  "tags": [
+    "tracing",
+    "observability",
+    "distributed-systems",
+    "performance"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `trace_id service_name duration_ms`. Multiple spans can share the same `trace_id`.\n\nReturn two sections:\n1. For each trace, the total duration (sum of all spans), one per line as `trace_id total_ms`, sorted by total_ms descending.\n2. The service with the highest total duration across all traces as `slowest_service name`.\n\nSeparate the two sections with a blank line.",
+  "constraints": [
+    "Fields are space-separated",
+    "Sum all span durations per trace for total_ms",
+    "Sum all durations per service across all traces for slowest_service",
+    "If two traces have the same total, sort by trace_id alphabetically"
+  ],
+  "examples": [
+    {
+      "input": "t1 api 100\nt1 auth 200\nt1 db 150\nt2 api 80\nt2 db 150",
+      "output": "t1 450\nt2 230\n\nslowest_service db",
+      "explanation": "t1=450ms, t2=230ms. db total=300 (150+150) > api total=180 > auth total=200... wait db=300, auth=200, api=180"
+    }
+  ],
+  "starter_code": {
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// group spans by trace_id for totals, group by service for slowest, output both sections\n\treturn \"\"\n}\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "Two traces, three services",
+      "input": "t1 api 100\nt1 auth 200\nt1 db 150\nt2 api 80\nt2 db 150",
+      "expected_output": "t1 450\nt2 230\n\nslowest_service db",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "Single trace single span",
+      "input": "abc gateway 500",
+      "expected_output": "abc 500\n\nslowest_service gateway",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Three traces, identify bottleneck",
+      "input": "r1 frontend 50\nr1 backend 400\nr1 cache 10\nr2 frontend 60\nr2 backend 300\nr3 backend 500\nr3 db 200",
+      "expected_output": "r3 700\nr1 460\nr2 360\n\nslowest_service backend",
+      "hidden": true
+    }
+  ]
+}

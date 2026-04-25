@@ -51,5 +51,6 @@
       "expected_output": "/c 200\n/b 150",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 3
 }

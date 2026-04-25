@@ -1,0 +1,56 @@
+{
+  "id": "sre-035",
+  "title": "TLS Certificate Expiry Checker",
+  "priority": 1,
+  "difficulty": "easy",
+  "category": "security",
+  "tags": [
+    "tls",
+    "security",
+    "certificates",
+    "bash"
+  ],
+  "languages": [
+    "bash"
+  ],
+  "description": "Input: lines of `hostname expiry_unix_timestamp`, then `---`, then a reference Unix timestamp.\n\nFind all certificates expiring within 30 days of the reference timestamp. Print `hostname days_remaining` for each, sorted by days_remaining ascending.\n\nReturn empty output if none expire within 30 days.",
+  "constraints": [
+    "30 days = 2592000 seconds",
+    "days_remaining = floor((expiry - reference) / 86400)",
+    "Only include certs where 0 <= days_remaining < 30",
+    "Sort by days_remaining ascending"
+  ],
+  "examples": [
+    {
+      "input": "api.example.com 1714000000\nweb.example.com 1716851200\n---\n1713827200",
+      "output": "api.example.com 2",
+      "explanation": "(1714000000-1713827200)/86400=2 days → flagged. web.example.com=35 days → not flagged."
+    }
+  ],
+  "starter_code": {
+    "bash": "#!/bin/bash\n# Read hostname+expiry lines, then ---, then reference timestamp\n# Print 'hostname days' for certs expiring within 30 days, sorted by days asc\nref=\"\"\ndeclare -A certs\nreading=true\nwhile IFS= read -r line; do\n    if [ \"$line\" = \"---\" ]; then reading=false; continue; fi\n    if [ \"$reading\" = true ]; then\n        host=$(echo \"$line\" | awk '{print $1}')\n        expiry=$(echo \"$line\" | awk '{print $2}')\n        certs[$host]=$expiry\n    else\n        ref=$line\n    fi\ndone\n# TODO: compute days_remaining for each cert and print those < 30\n"
+  },
+  "test_cases": [
+    {
+      "id": 1,
+      "description": "One cert expiring soon, one safe",
+      "input": "api.example.com 1714000000\nweb.example.com 1716851200\n---\n1713827200",
+      "expected_output": "api.example.com 2",
+      "hidden": false
+    },
+    {
+      "id": 2,
+      "description": "All safe",
+      "input": "safe.example.com 1716851200\n---\n1713827200",
+      "expected_output": "",
+      "hidden": false
+    },
+    {
+      "id": 3,
+      "description": "Multiple expiring, sorted by days",
+      "input": "alpha.example.com 1714172800\nbeta.example.com 1714000000\ngamma.example.com 1715987200\ndelta.example.com 1716851200\n---\n1713827200",
+      "expected_output": "beta.example.com 2\nalpha.example.com 4\ngamma.example.com 25",
+      "hidden": true
+    }
+  ]
+}

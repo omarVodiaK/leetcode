@@ -49,5 +49,6 @@
       "expected_output": "alice",
       "hidden": true
     }
-  ]
+  ],
+  "priority": 2
 }
