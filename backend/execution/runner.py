@@ -21,6 +21,7 @@ LANGUAGE_IMAGES = {
 }
 
 TIMEOUT_SECONDS = 10
+TIMEOUT_GO = 60          # go run compiles before executing — needs more time
 MEMORY_LIMIT = "256m"
 CPU_QUOTA = 50000  # 0.5 CPU cores (100000 = 1 core)
 
@@ -104,6 +105,7 @@ class DockerRunner:
     ) -> list[dict]:
         image = LANGUAGE_IMAGES[language]
         command = self._get_command(language)
+        timeout = TIMEOUT_GO if language == "go" else TIMEOUT_SECONDS
 
         container = None
         try:
@@ -125,9 +127,9 @@ class DockerRunner:
             container.start()
 
             try:
-                container.wait(timeout=TIMEOUT_SECONDS)
+                container.wait(timeout=timeout)
             except requests.exceptions.ReadTimeout:
-                return self._timeout_results(test_cases)
+                return self._timeout_results(test_cases, timeout)
 
             output = container.logs(stdout=True, stderr=False)
             output_str = output.decode("utf-8").strip()
@@ -136,7 +138,7 @@ class DockerRunner:
         except Exception as e:
             error_msg = str(e)
             if "timeout" in error_msg.lower() or "ReadTimeout" in type(e).__name__:
-                return self._timeout_results(test_cases)
+                return self._timeout_results(test_cases, timeout)
             return self._error_results(test_cases, error_msg[:500])
         finally:
             if container is not None:
@@ -170,13 +172,13 @@ class DockerRunner:
                     continue
         return self._error_results(test_cases, f"Could not parse output: {output[:200]}")
 
-    def _timeout_results(self, test_cases: list[TestCase]) -> list[dict]:
+    def _timeout_results(self, test_cases: list[TestCase], timeout: int = TIMEOUT_SECONDS) -> list[dict]:
         return [
             {
                 "test_case_id": tc.id,
                 "passed": False,
                 "actual_output": "Time Limit Exceeded",
-                "runtime_ms": TIMEOUT_SECONDS * 1000,
+                "runtime_ms": timeout * 1000,
             }
             for tc in test_cases
         ]
