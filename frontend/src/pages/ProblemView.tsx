@@ -27,7 +27,7 @@ export default function ProblemView() {
     fetchQuestion(id)
       .then((q) => {
         setQuestion(q)
-        const lang = q.languages[0]
+        const lang = q.languages.includes('go') ? 'go' : q.languages[0]
         setSelectedLang(lang)
         setCode(q.starter_code[lang] ?? '')
       })
