@@ -3,45 +3,50 @@
   "title": "Summarize Deployment Log",
   "difficulty": "easy",
   "category": "log-parsing",
-  "tags": ["deployment", "ci-cd", "summarization"],
-  "languages": ["python"],
-  "description": "Parse a deployment log where each line contains a service name followed by SUCCESS or FAILED. Return a summary dictionary with total count, succeeded count, failed count, and a sorted list of failed service names.",
+  "tags": [
+    "deployment",
+    "ci-cd",
+    "summarization"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `service_name SUCCESS|FAILED`. Return a summary with four lines:\n\n```\ntotal N\nsucceeded N\nfailed N\nfailed_services svc1,svc2\n```\n\n`failed_services` lists failed service names sorted alphabetically and comma-separated (empty string after the key if none failed).",
   "constraints": [
-    "Each line is in the format: service_name SUCCESS|FAILED",
-    "failed_services list must be sorted alphabetically",
-    "Return zero counts and empty list for empty input",
-    "Lines with unrecognized status should be skipped"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "auth-service SUCCESS\napi-gateway FAILED\npayment-service SUCCESS\nnotif-service FAILED",
-      "output": "{'total': 4, 'succeeded': 2, 'failed': 2, 'failed_services': ['api-gateway', 'notif-service']}",
-      "explanation": "4 services deployed; 2 succeeded (auth-service, payment-service) and 2 failed (api-gateway, notif-service). Failed services are returned in sorted order."
+      "output": "total 4\nsucceeded 2\nfailed 2\nfailed_services api-gateway,notif-service",
+      "explanation": "See test case: Mixed successes and failures"
     }
   ],
   "starter_code": {
-    "python": "def summarize_deployment(log_content: str) -> dict:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// count total/succeeded/failed, collect failed names sorted, output 4-line summary\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Four services with two successes and two failures",
+      "description": "Mixed successes and failures",
       "input": "auth-service SUCCESS\napi-gateway FAILED\npayment-service SUCCESS\nnotif-service FAILED",
-      "expected_output": "{'total': 4, 'succeeded': 2, 'failed': 2, 'failed_services': ['api-gateway', 'notif-service']}",
+      "expected_output": "total 4\nsucceeded 2\nfailed 2\nfailed_services api-gateway,notif-service",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All services succeed returns zero failures",
+      "description": "All succeed",
       "input": "svc-a SUCCESS\nsvc-b SUCCESS",
-      "expected_output": "{'total': 2, 'succeeded': 2, 'failed': 0, 'failed_services': []}",
+      "expected_output": "total 2\nsucceeded 2\nfailed 0\nfailed_services ",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Empty input returns all zeros",
+      "description": "Empty log",
       "input": "",
-      "expected_output": "{'total': 0, 'succeeded': 0, 'failed': 0, 'failed_services': []}",
+      "expected_output": "total 0\nsucceeded 0\nfailed 0\nfailed_services ",
       "hidden": true
     }
   ]

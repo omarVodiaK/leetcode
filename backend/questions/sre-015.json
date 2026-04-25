@@ -3,44 +3,48 @@
   "title": "Parse On-Call Schedule",
   "difficulty": "easy",
   "category": "incident-automation",
-  "tags": ["on-call", "scheduling", "pagerduty"],
-  "languages": ["python"],
-  "description": "Given an on-call schedule and a query timestamp, determine which engineer is on call at that moment. The input consists of schedule lines (name,start_unix,end_unix) separated from the query timestamp by a line containing only '---'. An engineer is on call when start_unix <= query_time <= end_unix. If multiple entries match (e.g. at exact boundary), return the first one.",
+  "tags": [
+    "on-call",
+    "scheduling",
+    "pagerduty"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Input: schedule lines as `name,start_unix,end_unix`, then `---`, then the query timestamp.\n\nReturn the name of the first on-call engineer whose window [start, end] includes the timestamp. Return `none` if nobody is on call at that time.",
   "constraints": [
-    "Schedule lines are comma-separated: name,start_unix,end_unix",
-    "Query timestamp is a Unix integer on the line after '---'",
-    "Return the name of the on-call engineer or None if no one is scheduled",
-    "If multiple entries match, return the first one (earliest in file order)",
-    "Interval is closed: [start, end] inclusive on both ends"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "alice,1000,2000\nbob,2000,3000\ncarol,3000,4000\n---\n1500",
       "output": "alice",
-      "explanation": "Timestamp 1500 falls within alice's shift [1000, 2000]. Bob's shift starts at 2000 and carol's at 3000."
+      "explanation": "See test case: Timestamp in alice's window"
     }
   ],
   "starter_code": {
-    "python": "def find_oncall(schedule_and_query: str) -> str | None:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse CSV schedule, find first entry where start<=ts<=end, return name or 'none'\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Query timestamp falls within alice's shift",
+      "description": "Timestamp in alice's window",
       "input": "alice,1000,2000\nbob,2000,3000\ncarol,3000,4000\n---\n1500",
       "expected_output": "alice",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Query timestamp is outside all shifts, returns None",
+      "description": "No coverage",
       "input": "alice,1000,2000\n---\n5000",
-      "expected_output": "None",
+      "expected_output": "none",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Query at boundary ts=2000 matches both alice and bob; first match (alice) is returned",
+      "description": "Boundary check",
       "input": "alice,1000,2000\nbob,2000,3000\n---\n2000",
       "expected_output": "alice",
       "hidden": true

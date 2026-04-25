@@ -3,43 +3,49 @@
   "title": "Compute P95 Latency",
   "difficulty": "medium",
   "category": "metrics",
-  "tags": ["percentile", "latency", "slo", "performance"],
-  "languages": ["python"],
-  "description": "Given a list of latency values (one per line), compute the 95th percentile latency using the nearest-rank method. The nearest-rank index is ceil(0.95 * n) - 1 (0-indexed) after sorting ascending. Return the latency value as an integer.",
+  "tags": [
+    "percentile",
+    "latency",
+    "slo",
+    "performance"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is an integer latency in milliseconds. Return the 95th percentile using the nearest-rank method: sort the values, P95 index = ceil(0.95 * n) - 1 (0-indexed).\n\nReturn the integer value as a string.",
   "constraints": [
-    "Latency values are positive integers, one per line",
-    "Use nearest-rank method: sort ascending, index = ceil(0.95 * n) - 1",
-    "Return the integer value at that index",
-    "Input will always have at least one value"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "100\n200\n150\n300\n250\n180\n220\n90\n310\n270",
       "output": "310",
-      "explanation": "10 values sorted: [90,100,150,180,200,220,250,270,300,310]. Index = ceil(0.95*10)-1 = ceil(9.5)-1 = 10-1 = 9. Value at index 9 = 310."
+      "explanation": "See test case: 10 samples"
     }
   ],
   "starter_code": {
-    "python": "import math\n\ndef p95_latency(log_content: str) -> int:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse ints, sort, compute index=ceil(0.95*n)-1, return that value as string\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "10 latency values, P95 is the highest value",
+      "description": "10 samples",
       "input": "100\n200\n150\n300\n250\n180\n220\n90\n310\n270",
       "expected_output": "310",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Single value, P95 is that value",
+      "description": "Single value",
       "input": "500",
       "expected_output": "500",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "20 values 10-200 stepping by 10, P95 is 190",
+      "description": "20 samples",
       "input": "10\n20\n30\n40\n50\n60\n70\n80\n90\n100\n110\n120\n130\n140\n150\n160\n170\n180\n190\n200",
       "expected_output": "190",
       "hidden": true

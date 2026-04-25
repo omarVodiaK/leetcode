@@ -3,46 +3,51 @@
   "title": "Moving Average",
   "difficulty": "easy",
   "category": "metrics",
-  "tags": ["moving-average", "smoothing", "time-series"],
-  "languages": ["python"],
-  "description": "Compute a rolling (moving) average of a time series of numeric values. For each position, compute the average of the current and previous w-1 values. Positions where a full window is not yet available (the first w-1 positions) should be represented as None.",
+  "tags": [
+    "moving-average",
+    "smoothing",
+    "time-series"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is a numeric value. Compute a rolling window average with window size 3.\n\nThe first 2 results are `null` (not enough data). From index 2 onward, output the average of the previous 3 values rounded to 2 decimal places, one per line.",
   "constraints": [
-    "Values are numeric, one per line",
-    "Window size w defaults to 3",
-    "First w-1 results are None",
-    "Averages are floats",
-    "If the input has only one value and w=1, return [value as float]"
+    "Window size is 3 (hard-coded)",
+    "First w-1 values output as 'null'",
+    "Averages rounded to 2 decimal places",
+    "Single value uses window=1: output the value itself"
   ],
   "examples": [
     {
       "input": "10\n20\n30\n40\n50",
-      "output": "[None, None, 20.0, 30.0, 40.0]",
-      "explanation": "With w=3: indices 0 and 1 have fewer than 3 values so they are None. Index 2: (10+20+30)/3=20.0. Index 3: (20+30+40)/3=30.0. Index 4: (30+40+50)/3=40.0."
+      "output": "null\nnull\n20.00\n30.00\n40.00",
+      "explanation": "See test case: 5 values window=3"
     }
   ],
   "starter_code": {
-    "python": "def moving_average(log_content: str, w: int = 3) -> list:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// sliding window of 3, print 'null' for first 2, then avg formatted to 2dp\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Five values with window=3, first two are None",
+      "description": "5 values window=3",
       "input": "10\n20\n30\n40\n50",
-      "expected_output": "[None, None, 20.0, 30.0, 40.0]",
+      "expected_output": "null\nnull\n20.00\n30.00\n40.00",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Single value with w=1 returns [value as float]",
+      "description": "Single value",
       "input": "42",
-      "expected_output": "[42.0]",
+      "expected_output": "42.00",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Four values with w=2, first is None",
+      "description": "4 values",
       "input": "4\n8\n6\n10",
-      "expected_output": "[None, 6.0, 7.0, 8.0]",
+      "expected_output": "null\nnull\n6.00\n8.00",
       "hidden": true
     }
   ]

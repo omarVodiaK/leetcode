@@ -3,45 +3,50 @@
   "title": "Parse Structured Log Lines",
   "difficulty": "medium",
   "category": "log-parsing",
-  "tags": ["json", "structured-logging", "error-extraction"],
-  "languages": ["python"],
-  "description": "Parse a log file where each line is a JSON object with at least a 'level' and 'message' field. Extract and return only the messages from lines where level equals 'ERROR'. Lines that are not valid JSON should be silently skipped.",
+  "tags": [
+    "json",
+    "structured-logging",
+    "error-extraction"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line of the input is a JSON object with at least `level` and `message` fields. Skip invalid JSON lines silently.\n\nReturn the `message` value of every ERROR-level entry, one message per line, in the order they appear.\n\nReturn an empty string if no ERROR lines are found.",
   "constraints": [
-    "Each line may or may not be valid JSON",
-    "Only extract messages where the level field equals exactly 'ERROR' (case-sensitive)",
-    "Invalid JSON lines must be silently skipped",
-    "Return messages in the order they appear"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "{\"level\": \"INFO\", \"message\": \"Server started\"}\n{\"level\": \"ERROR\", \"message\": \"DB connection failed\"}\n{\"level\": \"ERROR\", \"message\": \"Timeout on /api/v1\"}\nnot-json",
-      "output": "['DB connection failed', 'Timeout on /api/v1']",
-      "explanation": "Only lines with level=ERROR are collected. The INFO line and the invalid JSON line are both skipped."
+      "output": "DB connection failed\nTimeout on /api/v1",
+      "explanation": "See test case: Mixed log levels"
     }
   ],
   "starter_code": {
-    "python": "def extract_errors(log_content: str) -> list[str]:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// unmarshal each line as JSON, collect messages where level==ERROR\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Mixed log with INFO, ERROR lines and invalid JSON",
+      "description": "Mixed log levels",
       "input": "{\"level\": \"INFO\", \"message\": \"Server started\"}\n{\"level\": \"ERROR\", \"message\": \"DB connection failed\"}\n{\"level\": \"ERROR\", \"message\": \"Timeout on /api/v1\"}\nnot-json",
-      "expected_output": "['DB connection failed', 'Timeout on /api/v1']",
+      "expected_output": "DB connection failed\nTimeout on /api/v1",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Log with only INFO lines returns empty list",
+      "description": "No errors",
       "input": "{\"level\": \"INFO\", \"message\": \"All good\"}",
-      "expected_output": "[]",
+      "expected_output": "",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Entirely invalid JSON returns empty list",
+      "description": "All invalid JSON",
       "input": "not json\nalso not json",
-      "expected_output": "[]",
+      "expected_output": "",
       "hidden": true
     }
   ]

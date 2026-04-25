@@ -3,46 +3,50 @@
   "title": "Aggregate Metrics by Service",
   "difficulty": "medium",
   "category": "metrics",
-  "tags": ["aggregation", "statistics", "multi-service"],
-  "languages": ["python"],
-  "description": "Parse a metrics log where each line contains a service name and a latency in milliseconds. Aggregate the data per service to produce min, max, average, and count statistics. Return a dictionary keyed by service name with nested stats dictionaries.",
+  "tags": [
+    "aggregation",
+    "statistics",
+    "multi-service"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `service_name latency_ms` (space-separated). Return per-service stats, one service per line as:\n\n`service min=N max=N avg=N.NN count=N`\n\nSorted alphabetically by service name. Return empty string for empty input.",
   "constraints": [
-    "Each line is space-separated: service_name latency_ms",
-    "Return {service: {min, max, avg, count}} for each service",
-    "avg must be rounded to 2 decimal places",
-    "Return empty dict for empty input",
-    "min and max are integers"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "auth 100\napi 200\nauth 150\napi 300\nauth 50",
-      "output": "{'auth': {'min': 50, 'max': 150, 'avg': 100.0, 'count': 3}, 'api': {'min': 200, 'max': 300, 'avg': 250.0, 'count': 2}}",
-      "explanation": "auth has 3 samples (100, 150, 50): min=50, max=150, avg=100.0. api has 2 samples (200, 300): min=200, max=300, avg=250.0."
+      "output": "api min=200 max=300 avg=250.00 count=2\nauth min=50 max=150 avg=100.00 count=3",
+      "explanation": "See test case: Two services"
     }
   ],
   "starter_code": {
-    "python": "def aggregate_metrics(log_content: str) -> dict:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// group by service, compute min/max/avg/count, sort by service name, format each line\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Two services with multiple measurements",
+      "description": "Two services",
       "input": "auth 100\napi 200\nauth 150\napi 300\nauth 50",
-      "expected_output": "{'auth': {'min': 50, 'max': 150, 'avg': 100.0, 'count': 3}, 'api': {'min': 200, 'max': 300, 'avg': 250.0, 'count': 2}}",
+      "expected_output": "api min=200 max=300 avg=250.00 count=2\nauth min=50 max=150 avg=100.00 count=3",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Single service with one measurement",
+      "description": "Single service single reading",
       "input": "db 500",
-      "expected_output": "{'db': {'min': 500, 'max': 500, 'avg': 500.0, 'count': 1}}",
+      "expected_output": "db min=500 max=500 avg=500.00 count=1",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Empty input returns empty dict",
+      "description": "Empty input",
       "input": "",
-      "expected_output": "{}",
+      "expected_output": "",
       "hidden": true
     }
   ]

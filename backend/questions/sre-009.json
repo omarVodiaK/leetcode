@@ -3,45 +3,50 @@
   "title": "Compute Error Rate",
   "difficulty": "easy",
   "category": "metrics",
-  "tags": ["error-rate", "metrics", "reliability"],
-  "languages": ["python"],
-  "description": "Given a log file where each line contains a Unix timestamp and a 0 or 1 (1 = error), compute the overall error rate as a percentage. Return the result as a float rounded to 2 decimal places.",
+  "tags": [
+    "error-rate",
+    "metrics",
+    "reliability"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `timestamp\\t0|1` (tab-separated, 1 = error). Compute the error rate as a percentage, rounded to 2 decimal places.\n\nReturn `0.00` for empty input.",
   "constraints": [
-    "Each line is tab-separated: timestamp\\t0|1",
-    "Error rate = (number of 1s / total lines) * 100",
-    "Return 0.0 for empty input",
-    "Round result to 2 decimal places"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "1000\t0\n1001\t1\n1002\t0\n1003\t1\n1004\t0",
-      "output": "40.0",
-      "explanation": "5 total requests, 2 errors. Error rate = 2/5 * 100 = 40.0%"
+      "output": "40.00",
+      "explanation": "See test case: 40% error rate"
     }
   ],
   "starter_code": {
-    "python": "def error_rate(log_content: str) -> float:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// count errors and total, return fmt.Sprintf('%.2f', 100*errors/total)\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "5 requests with 2 errors gives 40% error rate",
+      "description": "40% error rate",
       "input": "1000\t0\n1001\t1\n1002\t0\n1003\t1\n1004\t0",
-      "expected_output": "40.0",
+      "expected_output": "40.00",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All successful requests gives 0% error rate",
+      "description": "No errors",
       "input": "1000\t0\n1001\t0",
-      "expected_output": "0.0",
+      "expected_output": "0.00",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "All requests are errors gives 100% error rate",
+      "description": "All errors",
       "input": "1\t1\n2\t1\n3\t1",
-      "expected_output": "100.0",
+      "expected_output": "100.00",
       "hidden": true
     }
   ]

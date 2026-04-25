@@ -3,46 +3,50 @@
   "title": "Parse Key=Value Log Fields",
   "difficulty": "easy",
   "category": "log-parsing",
-  "tags": ["key-value", "log-parsing", "structured-data"],
-  "languages": ["python"],
-  "description": "Parse a structured log line in key=value format where values may be optionally quoted with double quotes. Return a dictionary of all key-value pairs found. Quoted values should have their surrounding quotes removed in the result.",
+  "tags": [
+    "key-value",
+    "log-parsing",
+    "structured-data"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Parse a log line in `key=value key=value ...` format. Values may be double-quoted. Return each key-value pair on its own line as `key value`, sorted by key alphabetically.\n\nReturn an empty string for empty input.",
   "constraints": [
-    "Key-value pairs are space-separated",
-    "Values may be optionally wrapped in double quotes",
-    "Quoted values can contain spaces",
-    "Return an empty dict for empty or whitespace-only input",
-    "Keys and values are strings"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "level=ERROR service=auth-api latency=250ms msg=\"connection refused\"",
-      "output": "{'level': 'ERROR', 'service': 'auth-api', 'latency': '250ms', 'msg': 'connection refused'}",
-      "explanation": "Four key-value pairs are parsed. The msg value was quoted and contains a space; the quotes are stripped from the result."
+      "output": "latency 250ms\nlevel ERROR\nmsg connection refused\nservice auth-api",
+      "explanation": "See test case: Mixed quoted and unquoted"
     }
   ],
   "starter_code": {
-    "python": "def parse_kv_log(line: str) -> dict[str, str]:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// tokenize key=value pairs, strip quotes from values, sort by key, return 'key value' per line\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Line with mixed quoted and unquoted values",
+      "description": "Mixed quoted and unquoted",
       "input": "level=ERROR service=auth-api latency=250ms msg=\"connection refused\"",
-      "expected_output": "{'level': 'ERROR', 'service': 'auth-api', 'latency': '250ms', 'msg': 'connection refused'}",
+      "expected_output": "latency 250ms\nlevel ERROR\nmsg connection refused\nservice auth-api",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Empty string returns empty dict",
+      "description": "Empty input",
       "input": "",
-      "expected_output": "{}",
+      "expected_output": "",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "All values are quoted with spaces",
+      "description": "All quoted values",
       "input": "a=\"hello world\" b=\"foo bar\"",
-      "expected_output": "{'a': 'hello world', 'b': 'foo bar'}",
+      "expected_output": "a hello world\nb foo bar",
       "hidden": true
     }
   ]

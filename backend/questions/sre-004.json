@@ -3,45 +3,52 @@
   "title": "Extract Slow Requests from Access Log",
   "difficulty": "medium",
   "category": "log-parsing",
-  "tags": ["performance", "latency", "access-log", "filtering"],
-  "languages": ["python"],
-  "description": "Parse a tab-separated log where each line contains a request path and its response time in milliseconds. Find all requests that exceed the given threshold, returning them as a list of (path, ms) tuples sorted by response time in descending order.",
+  "tags": [
+    "performance",
+    "latency",
+    "access-log",
+    "filtering"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `path\\tms` (tab-separated). Return all entries where ms exceeds 500, one per line as `path ms`, sorted by ms descending.\n\nReturn an empty string if none exceed the threshold.",
   "constraints": [
-    "Each log line is tab-separated: path\\tlatency_ms",
-    "Threshold defaults to 500ms",
-    "Return tuples sorted by latency descending",
-    "Return empty list if no requests exceed the threshold"
+    "Threshold is 500ms (hard-coded for this problem)",
+    "Sort by ms descending",
+    "Return empty string if none exceed threshold",
+    "Skip malformed lines"
   ],
   "examples": [
     {
       "input": "/api/v1/users\t150\n/api/v1/orders\t2300\n/health\t12\n/api/v1/reports\t890",
-      "output": "[('/api/v1/orders', 2300), ('/api/v1/reports', 890)]",
-      "explanation": "Only /api/v1/orders (2300ms) and /api/v1/reports (890ms) exceed the 500ms threshold. They are returned sorted by latency descending."
+      "output": "/api/v1/orders 2300\n/api/v1/reports 890",
+      "explanation": "See test case: Mixed latencies"
     }
   ],
   "starter_code": {
-    "python": "def slow_requests(log_content: str, threshold_ms: int = 500) -> list[tuple[str, int]]:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// split on tab, parse int ms, filter >500, sort desc by ms, return 'path ms' per line\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Mixed latencies, two exceed 500ms threshold",
+      "description": "Mixed latencies",
       "input": "/api/v1/users\t150\n/api/v1/orders\t2300\n/health\t12\n/api/v1/reports\t890",
-      "expected_output": "[('/api/v1/orders', 2300), ('/api/v1/reports', 890)]",
+      "expected_output": "/api/v1/orders 2300\n/api/v1/reports 890",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All requests below threshold returns empty list",
+      "description": "No slow requests",
       "input": "/health\t5\n/ping\t2",
-      "expected_output": "[]",
+      "expected_output": "",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Custom threshold of 100ms, two paths exceed it",
+      "description": "Threshold 100ms",
       "input": "/a\t50\n/b\t150\n/c\t200\n/d\t80",
-      "expected_output": "[('/c', 200), ('/b', 150)]",
+      "expected_output": "/c 200\n/b 150",
       "hidden": true
     }
   ]

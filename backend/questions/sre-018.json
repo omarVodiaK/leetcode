@@ -3,46 +3,51 @@
   "title": "MTTR Calculator",
   "difficulty": "medium",
   "category": "incident-automation",
-  "tags": ["mttr", "incident", "sre-metrics", "reliability"],
-  "languages": ["python"],
-  "description": "Mean Time To Recovery (MTTR) is the average time taken to resolve incidents. Given a log of incidents with start and end Unix timestamps, compute the average resolution time in minutes, rounded to 2 decimal places. Return 0.0 for empty input.",
+  "tags": [
+    "mttr",
+    "incident",
+    "sre-metrics",
+    "reliability"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `incident_id,start_unix,end_unix`. Calculate Mean Time To Recovery in minutes (avg duration across all incidents), rounded to 2 decimal places.\n\nReturn `0.00` for empty input.",
   "constraints": [
-    "Each line is comma-separated: incident_id,start_unix,end_unix",
-    "Duration = (end_unix - start_unix) / 60.0 minutes",
-    "Return average duration rounded to 2 decimal places",
-    "Return 0.0 for empty input",
-    "Assume end_unix is always greater than start_unix"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "INC001,1000,1600\nINC002,2000,2300\nINC003,3000,3900",
-      "output": "10.0",
-      "explanation": "INC001: 600s=10min, INC002: 300s=5min, INC003: 900s=15min. MTTR = (10+5+15)/3 = 10.0 minutes."
+      "output": "10.00",
+      "explanation": "See test case: 3 incidents, MTTR 10 min"
     }
   ],
   "starter_code": {
-    "python": "def mttr_minutes(log_content: str) -> float:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse CSV, compute (end-start)/60 per incident, return avg formatted to 2dp\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Three incidents averaging 10 minutes MTTR",
+      "description": "3 incidents, MTTR 10 min",
       "input": "INC001,1000,1600\nINC002,2000,2300\nINC003,3000,3900",
-      "expected_output": "10.0",
+      "expected_output": "10.00",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Empty input returns 0.0",
+      "description": "Empty input",
       "input": "",
-      "expected_output": "0.0",
+      "expected_output": "0.00",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Single incident lasting exactly 1 hour",
+      "description": "Single incident 1 hour",
       "input": "INC001,0,3600",
-      "expected_output": "60.0",
+      "expected_output": "60.00",
       "hidden": true
     }
   ]

@@ -3,45 +3,50 @@
   "title": "Health Check Result Aggregator",
   "difficulty": "easy",
   "category": "incident-automation",
-  "tags": ["health-check", "monitoring", "aggregation"],
-  "languages": ["python"],
-  "description": "Aggregate health check results for multiple services. Each line contains a service name and its status (UP or DOWN). Return a summary dict with total services, count of UP services, count of DOWN services, and a sorted list of service names that are currently DOWN.",
+  "tags": [
+    "health-check",
+    "monitoring",
+    "aggregation"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `service_name\\tUP|DOWN` (tab-separated). Return:\n\n```\ntotal N\nup N\ndown N\ndown_services svc1,svc2\n```\n\n`down_services` lists DOWN service names sorted alphabetically and comma-separated (empty string after the key if none are down).",
   "constraints": [
-    "Each line is tab-separated: service_name\\tUP|DOWN",
-    "down_services list must be sorted alphabetically",
-    "Return zero counts and empty list for empty input",
-    "Duplicate service names are treated as separate entries"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "api\tUP\ndb\tDOWN\ncache\tUP\nqueue\tDOWN",
-      "output": "{'total_services': 4, 'up': 2, 'down': 2, 'down_services': ['db', 'queue']}",
-      "explanation": "4 services checked: api and cache are UP, db and queue are DOWN. Down services are listed alphabetically."
+      "output": "total 4\nup 2\ndown 2\ndown_services db,queue",
+      "explanation": "See test case: Mixed UP and DOWN"
     }
   ],
   "starter_code": {
-    "python": "def aggregate_health(log_content: str) -> dict:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// count total/up/down, collect down names sorted, output 4-line summary\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "4 services, 2 up and 2 down",
+      "description": "Mixed UP and DOWN",
       "input": "api\tUP\ndb\tDOWN\ncache\tUP\nqueue\tDOWN",
-      "expected_output": "{'total_services': 4, 'up': 2, 'down': 2, 'down_services': ['db', 'queue']}",
+      "expected_output": "total 4\nup 2\ndown 2\ndown_services db,queue",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All services UP, empty down list",
+      "description": "All UP",
       "input": "svc-a\tUP\nsvc-b\tUP",
-      "expected_output": "{'total_services': 2, 'up': 2, 'down': 0, 'down_services': []}",
+      "expected_output": "total 2\nup 2\ndown 0\ndown_services ",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Empty input returns all zeros",
+      "description": "Empty input",
       "input": "",
-      "expected_output": "{'total_services': 0, 'up': 0, 'down': 0, 'down_services': []}",
+      "expected_output": "total 0\nup 0\ndown 0\ndown_services ",
       "hidden": true
     }
   ]

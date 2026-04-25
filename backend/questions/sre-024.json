@@ -3,47 +3,51 @@
   "title": "Config File Diff",
   "difficulty": "medium",
   "category": "infra-scripting",
-  "tags": ["config", "diff", "infrastructure-as-code", "gitops"],
-  "languages": ["python"],
-  "description": "Compare two key=value configuration files and identify what changed between them. The two config files are separated by a line containing only '---'. Return a dictionary with three keys: 'added' (keys in new but not old), 'removed' (keys in old but not new), and 'changed' (keys in both but with different values, showing old and new values).",
+  "tags": [
+    "config",
+    "diff",
+    "infrastructure-as-code",
+    "gitops"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Two `key=value` config files separated by `---`. Ignore comment lines (starting with `#`) and empty lines.\n\nReturn three sections:\n```\nadded key=value ...\nremoved key=value ...\nchanged key old->new ...\n```\nEach section lists its entries space-separated on one line (empty after the keyword if no entries in that section). Keys sorted alphabetically.",
   "constraints": [
-    "Each config line is in key=value format",
-    "The two configs are separated by a line containing only '---'",
-    "added: {key: new_value} for keys only in new config",
-    "removed: {key: old_value} for keys only in old config",
-    "changed: {key: {old: old_val, new: new_val}} for keys with different values",
-    "Keys with identical values in both configs are not reported"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "host=localhost\nport=5432\ndebug=true\n---\nhost=db.prod\nport=5432\ntimeout=30",
-      "output": "{'added': {'timeout': '30'}, 'removed': {'debug': 'true'}, 'changed': {'host': {'old': 'localhost', 'new': 'db.prod'}}}",
-      "explanation": "timeout was added, debug was removed, host changed from localhost to db.prod. port=5432 is identical and not reported."
+      "output": "added timeout=30\nremoved debug=true\nchanged host=localhost->db.prod",
+      "explanation": "See test case: Add, remove, change"
     }
   ],
   "starter_code": {
-    "python": "def config_diff(old_and_new: str) -> dict:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse both configs, compute added/removed/changed sets, output 3 lines\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "One key added, one removed, one changed, one unchanged",
+      "description": "Add, remove, change",
       "input": "host=localhost\nport=5432\ndebug=true\n---\nhost=db.prod\nport=5432\ntimeout=30",
-      "expected_output": "{'added': {'timeout': '30'}, 'removed': {'debug': 'true'}, 'changed': {'host': {'old': 'localhost', 'new': 'db.prod'}}}",
+      "expected_output": "added timeout=30\nremoved debug=true\nchanged host=localhost->db.prod",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Identical configs return empty diffs",
+      "description": "Identical configs",
       "input": "host=localhost\nport=5432\n---\nhost=localhost\nport=5432",
-      "expected_output": "{'added': {}, 'removed': {}, 'changed': {}}",
+      "expected_output": "added \nremoved \nchanged ",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "All values changed, nothing added or removed",
+      "description": "All keys changed",
       "input": "a=1\nb=2\n---\na=10\nb=20",
-      "expected_output": "{'added': {}, 'removed': {}, 'changed': {'a': {'old': '1', 'new': '10'}, 'b': {'old': '2', 'new': '20'}}}",
+      "expected_output": "added \nremoved \nchanged a=1->10 b=2->20",
       "hidden": true
     }
   ]

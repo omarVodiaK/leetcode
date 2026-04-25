@@ -3,47 +3,52 @@
   "title": "Parse Disk Usage Report",
   "difficulty": "easy",
   "category": "infra-scripting",
-  "tags": ["disk", "df", "capacity-planning", "ops"],
-  "languages": ["python", "bash"],
-  "description": "Parse the output of the 'df -h' command and identify filesystems that are above a usage percentage threshold. Return a list of (mount_point, use_percent) tuples for filesystems exceeding the threshold, sorted by use_percent descending.",
+  "tags": [
+    "disk",
+    "df",
+    "capacity-planning",
+    "ops"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Parse `df -h` output. The `Use%` column ends with `%`; the last column is the mount point. Return mount points where usage > 80%, one per line as `mount_point use_percent`, sorted by use_percent descending.\n\nReturn an empty string if none exceed 80%.",
   "constraints": [
-    "Input is df -h output; the first line is the header and must be skipped",
-    "Use% column is the 5th field (4th index), mount point is the 6th field",
-    "threshold defaults to 80 percent",
-    "Return empty list if no filesystems exceed the threshold",
-    "Percent sign in the Use% column should be stripped when converting to int"
+    "Threshold is 80% (hard-coded)",
+    "Use% column ends with %; strip it for comparison",
+    "Skip the header line",
+    "Sort descending by use percent"
   ],
   "examples": [
     {
       "input": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   45G    5G  90% /\n/dev/sda2        20G    2G   18G  10% /boot\n/dev/sda3       100G   85G   15G  85% /data",
-      "output": "[('/', 90), ('/data', 85)]",
-      "explanation": "/ is at 90% and /data is at 85%, both above the 80% threshold. /boot at 10% is excluded. Results are sorted by percentage descending."
+      "output": "/ 90\n/data 85",
+      "explanation": "See test case: Two partitions over 80%"
     }
   ],
   "starter_code": {
-    "python": "def high_disk_usage(df_output: str, threshold: int = 80) -> list[tuple[str, int]]:\n    pass\n",
-    "bash": "#!/bin/bash\n# Read df output from stdin, THRESHOLD as first arg (default 80)\nTHRESHOLD=${1:-80}\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// skip header, parse Use% and mount point, filter >80, sort desc by %, return 'mount pct' per line\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Two filesystems above 80% threshold",
+      "description": "Two partitions over 80%",
       "input": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   45G    5G  90% /\n/dev/sda2        20G    2G   18G  10% /boot\n/dev/sda3       100G   85G   15G  85% /data",
-      "expected_output": "[('/', 90), ('/data', 85)]",
+      "expected_output": "/ 90\n/data 85",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All filesystems below threshold returns empty list",
+      "description": "None over threshold",
       "input": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G    5G   45G  10% /",
-      "expected_output": "[]",
+      "expected_output": "",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Custom threshold of 50%, one filesystem exceeds it",
+      "description": "Threshold 60%",
       "input": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1       100G   60G   40G  60% /\n/dev/sda2       100G   40G   60G  40% /tmp",
-      "expected_output": "[('/', 60)]",
+      "expected_output": "/ 60",
       "hidden": true
     }
   ]

@@ -3,44 +3,48 @@
   "title": "Alert Deduplication",
   "difficulty": "medium",
   "category": "incident-automation",
-  "tags": ["alerting", "deduplication", "noise-reduction"],
-  "languages": ["python"],
-  "description": "Implement alert deduplication to reduce alert noise. Given a log of alerts with timestamps, suppress duplicate alerts of the same type that occur within a sliding window of seconds from the last kept alert. Return only the non-suppressed alerts in their original order.",
+  "tags": [
+    "alerting",
+    "deduplication",
+    "noise-reduction"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is `timestamp\\talert_name` (tab-separated). Deduplicate alerts of the same name within a 300-second window: keep only the first occurrence, reset the window after each kept alert.\n\nReturn the deduplicated lines sorted by timestamp ascending, in the same `timestamp\\talert_name` format.",
   "constraints": [
-    "Each line is tab-separated: timestamp\\talert_name",
-    "Keep the first occurrence of an alert; suppress subsequent occurrences within window_seconds",
-    "After window_seconds have passed since the last kept alert, the next occurrence is kept",
-    "window_seconds defaults to 300 (5 minutes)",
-    "Return kept alert lines joined with newlines"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "1000\tHighCPU\n1100\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
       "output": "1000\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
-      "explanation": "HighCPU at 1000 is kept. HighCPU at 1100 is suppressed (1100-1000=100s < 300s window). HighMemory at 1400 is a new alert, kept. HighCPU at 1600 is kept (1600-1000=600s > 300s window)."
+      "explanation": "See test case: Dedup one HighCPU"
     }
   ],
   "starter_code": {
-    "python": "def deduplicate_alerts(log_content: str, window_seconds: int = 300) -> str:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// track last-seen per alert name, suppress if within 300s, return kept lines\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "HighCPU deduped within window, re-fires after window expires",
+      "description": "Dedup one HighCPU",
       "input": "1000\tHighCPU\n1100\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
       "expected_output": "1000\tHighCPU\n1400\tHighMemory\n1600\tHighCPU",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Different alerts are never suppressed against each other",
+      "description": "No duplicates",
       "input": "1000\tAlertA\n2000\tAlertB",
       "expected_output": "1000\tAlertA\n2000\tAlertB",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Three rapid same-name alerts, only first survives",
+      "description": "All duplicates",
       "input": "0\tDiskFull\n10\tDiskFull\n20\tDiskFull",
       "expected_output": "0\tDiskFull",
       "hidden": true

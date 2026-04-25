@@ -1,46 +1,50 @@
 {
   "id": "sre-023",
-  "title": "Parse crontab for Next Run",
+  "title": "Parse Crontab for Next Run",
   "difficulty": "hard",
   "category": "infra-scripting",
-  "tags": ["cron", "scheduling", "datetime"],
-  "languages": ["python"],
-  "description": "Given a simplified cron expression (supporting only '*' wildcards and single integer values for the 5 fields: minute, hour, day-of-month, month, day-of-week) and a reference datetime, compute the next scheduled run time. Return the result as an ISO 8601 datetime string (YYYY-MM-DDTHH:MM:SS). The next run must be strictly after the reference time.",
+  "tags": [
+    "cron",
+    "scheduling",
+    "datetime"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Input: a cron expression (5 fields: min hour dom month dow) on the first line, then a reference UTC datetime as `YYYY-MM-DDTHH:MM:SS` on the second line.\n\nOnly `*` (any) and single integers are valid field values. Return the next UTC datetime (strictly after the reference) when the cron would fire, in `YYYY-MM-DDTHH:MM:SS` format. Search up to 4 years ahead.",
   "constraints": [
-    "Cron fields: minute(0-59) hour(0-23) dom(1-31) month(1-12) dow(0-6)",
-    "Only '*' (any) and single integer values are supported — no ranges, lists, or step values",
-    "Reference datetime is on the line after the cron expression, in ISO format YYYY-MM-DDTHH:MM:SS",
-    "Next run must be strictly after the reference datetime",
-    "Day-of-week (0=Sunday) is ignored if dom is a specific integer (dom takes precedence)"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "0 * * * *\n2024-01-01T00:00:30",
       "output": "2024-01-01T01:00:00",
-      "explanation": "The cron runs at minute 0 of every hour. The reference time is 00:00:30, so the next run is at 01:00:00 (the next top of the hour)."
+      "explanation": "See test case: Hourly job"
     }
   ],
   "starter_code": {
-    "python": "from datetime import datetime, timedelta\n\ndef next_cron_run(cron_and_ref: str) -> str:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse cron fields, iterate minutes from ref+1 until all 5 fields match, return formatted time\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Hourly at minute 0, next run is in 1 hour",
+      "description": "Hourly job",
       "input": "0 * * * *\n2024-01-01T00:00:30",
       "expected_output": "2024-01-01T01:00:00",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "Daily at midnight, next run is next day",
+      "description": "Daily at midnight",
       "input": "0 0 * * *\n2024-01-01T00:01:00",
       "expected_output": "2024-01-02T00:00:00",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Daily at 14:30, reference is exactly at 14:30 so next is tomorrow",
+      "description": "Specific time daily",
       "input": "30 14 * * *\n2024-06-15T14:30:00",
       "expected_output": "2024-06-16T14:30:00",
       "hidden": true

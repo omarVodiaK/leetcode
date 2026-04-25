@@ -3,44 +3,48 @@
   "title": "Runbook Step Executor Simulator",
   "difficulty": "medium",
   "category": "incident-automation",
-  "tags": ["runbook", "incident-response", "automation"],
-  "languages": ["python"],
-  "description": "Simulate a runbook step tracker. The input contains runbook steps in format 'STEP_N: action', separated from a comma-separated list of completed step numbers by '---'. Find and return the next incomplete step in order, or None if all steps are completed.",
+  "tags": [
+    "runbook",
+    "incident-response",
+    "automation"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Input: `STEP_N: action` lines, then `---`, then a comma-separated list of completed step numbers.\n\nReturn the full text of the first incomplete step. Return `none` if all steps are complete.",
   "constraints": [
-    "Steps are in format STEP_N: action where N is a positive integer",
-    "Completed steps are comma-separated integers after the '---' separator",
-    "Return the full step line (e.g. 'STEP_3: Notify stakeholders') of the next incomplete step",
-    "Return None as a string if all steps are completed",
-    "If completed list is empty, return the first step"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "STEP_1: Check pod status\nSTEP_2: Restart deployment\nSTEP_3: Notify stakeholders\n---\n1,2",
       "output": "STEP_3: Notify stakeholders",
-      "explanation": "Steps 1 and 2 are marked done. STEP_3 is the next incomplete step."
+      "explanation": "See test case: 2 of 3 steps complete"
     }
   ],
   "starter_code": {
-    "python": "def next_runbook_step(runbook_and_done: str) -> str | None:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse steps, parse done set, find first step not in done set, return its text or 'none'\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "Steps 1 and 2 done, returns step 3",
+      "description": "2 of 3 steps complete",
       "input": "STEP_1: Check pod status\nSTEP_2: Restart deployment\nSTEP_3: Notify stakeholders\n---\n1,2",
       "expected_output": "STEP_3: Notify stakeholders",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All steps complete returns None",
+      "description": "All steps complete",
       "input": "STEP_1: Reboot server\nSTEP_2: Verify health\n---\n1,2",
-      "expected_output": "None",
+      "expected_output": "none",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "No steps completed, returns first step",
+      "description": "None completed",
       "input": "STEP_1: First action\nSTEP_2: Second action\n---\n",
       "expected_output": "STEP_1: First action",
       "hidden": true

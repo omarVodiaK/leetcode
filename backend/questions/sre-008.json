@@ -3,46 +3,50 @@
   "title": "Find Log Gaps",
   "difficulty": "medium",
   "category": "log-parsing",
-  "tags": ["time-series", "gap-detection", "monitoring"],
-  "languages": ["python"],
-  "description": "Given a log file with one Unix timestamp per line, find periods where no log events were recorded for longer than a specified gap duration. Timestamps may be out of order and should be sorted first. Return a list of (gap_start, gap_end, duration_seconds) tuples for all gaps that exceed the threshold.",
+  "tags": [
+    "time-series",
+    "gap-detection",
+    "monitoring"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Each line is a Unix timestamp. Sort the timestamps and find gaps between consecutive entries greater than 30 seconds.\n\nReturn each gap as `start end duration` on its own line, sorted by start ascending.\n\nReturn an empty string if no gaps are found.",
   "constraints": [
-    "Timestamps are Unix integers, one per line, possibly out of order",
-    "Sort timestamps before finding gaps",
-    "Gap threshold defaults to 30 seconds",
-    "Only report gaps strictly greater than gap_seconds",
-    "Return results as (gap_start, gap_end, duration) sorted by gap_start ascending"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "1000\n1005\n1010\n1080\n1085",
-      "output": "[(1010, 1080, 70)]",
-      "explanation": "Between timestamps 1010 and 1080 there is a 70-second gap which exceeds the 30-second threshold. All other consecutive pairs have gaps of 5 seconds."
+      "output": "1010 1080 70",
+      "explanation": "See test case: One gap"
     }
   ],
   "starter_code": {
-    "python": "def find_gaps(log_content: str, gap_seconds: int = 30) -> list[tuple[int, int, int]]:\n    pass\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// parse+sort timestamps, find consecutive gaps>30, return 'start end duration' per line\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "One gap of 70 seconds exceeds the 30s threshold",
+      "description": "One gap",
       "input": "1000\n1005\n1010\n1080\n1085",
-      "expected_output": "[(1010, 1080, 70)]",
+      "expected_output": "1010 1080 70",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "All gaps of 10 seconds, none exceed 30s threshold",
+      "description": "No gaps",
       "input": "1000\n1010\n1020\n1030",
-      "expected_output": "[]",
+      "expected_output": "",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Out-of-order timestamps with two large gaps after sorting",
+      "description": "Unsorted input, two gaps",
       "input": "2000\n1000\n1005\n1100\n2010",
-      "expected_output": "[(1005, 1100, 95), (1100, 2000, 900)]",
+      "expected_output": "1005 1100 95\n1100 2000 900",
       "hidden": true
     }
   ]

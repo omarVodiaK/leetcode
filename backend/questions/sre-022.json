@@ -3,47 +3,51 @@
   "title": "Find Zombie Processes",
   "difficulty": "easy",
   "category": "infra-scripting",
-  "tags": ["processes", "ps", "zombie", "linux"],
-  "languages": ["python", "bash"],
-  "description": "Parse 'ps aux' output and identify zombie processes. A zombie process has 'Z' in its STAT column (column index 7, 0-based). Return the PIDs (column index 1) of all zombie processes as a sorted list of integers.",
+  "tags": [
+    "processes",
+    "ps",
+    "zombie",
+    "linux"
+  ],
+  "languages": [
+    "go"
+  ],
+  "description": "Parse `ps aux` output. The STAT column (index 7, 0-based) contains 'Z' for zombie processes. The PID is column index 1.\n\nReturn zombie PIDs sorted ascending, one per line. Return empty string if none found.",
   "constraints": [
-    "Input is ps aux output; the header line must be skipped",
-    "PID is the second column (index 1), STAT is the eighth column (index 7)",
-    "A zombie process has STAT that starts with or contains 'Z'",
-    "Return PIDs as integers in ascending sorted order",
-    "Return empty list if no zombies are found"
+    "Input is a plain string passed to solve(input string) string",
+    "Return a string matching the expected output exactly",
+    "Return empty string where the problem specifies no results"
   ],
   "examples": [
     {
       "input": "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1  19356  1544 ?        Ss   10:00   0:01 /sbin/init\nwww-data  1234  0.0  0.0      0     0 ?        Z    10:01   0:00 [nginx] <defunct>\nwww-data  5678  0.1  0.2  12345  2048 ?        S    10:02   0:05 nginx: worker",
-      "output": "[1234]",
-      "explanation": "Process 1234 has STAT='Z' indicating it is a zombie. Process 1 (Ss) and process 5678 (S) are not zombies."
+      "output": "1234",
+      "explanation": "See test case: One zombie"
     }
   ],
   "starter_code": {
-    "python": "def find_zombies(ps_output: str) -> list[int]:\n    pass\n",
-    "bash": "#!/bin/bash\n# Read ps aux output from stdin, print zombie PIDs\n"
+    "go": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc solve(input string) string {\n\tlines := strings.Split(strings.TrimSpace(input), \"\\n\")\n\t_ = fmt.Sprintf\n\t_ = lines\n\t// skip header, split fields, check fields[7] starts with Z, collect fields[1] as PID, sort\n\treturn \"\"\n}\n"
   },
   "test_cases": [
     {
       "id": 1,
-      "description": "One zombie process among normal processes",
+      "description": "One zombie",
       "input": "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1  19356  1544 ?        Ss   10:00   0:01 /sbin/init\nwww-data  1234  0.0  0.0      0     0 ?        Z    10:01   0:00 [nginx] <defunct>\nwww-data  5678  0.1  0.2  12345  2048 ?        S    10:02   0:05 nginx: worker",
-      "expected_output": "[1234]",
+      "expected_output": "1234",
       "hidden": false
     },
     {
       "id": 2,
-      "description": "No zombie processes returns empty list",
+      "description": "No zombies",
       "input": "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1  19356  1544 ?        Ss   10:00   0:01 /sbin/init",
-      "expected_output": "[]",
+      "expected_output": "",
       "hidden": false
     },
     {
       "id": 3,
-      "description": "Two zombies and one normal process, sorted PIDs returned",
+      "description": "Multiple zombies",
       "input": "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot       100  0.0  0.0      0     0 ?        Z    10:00   0:00 [dead]\nroot       200  0.0  0.0      0     0 ?        Z    10:00   0:00 [dead2]\nroot       300  0.1  0.1   1000   512 ?        S    10:00   0:01 alive",
-      "expected_output": "[100, 200]",
+      "expected_output": "100\n200",
       "hidden": true
     }
   ]
